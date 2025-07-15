@@ -1,0 +1,23 @@
+.footer {
+    background-color: rgba(201 88 76 / 1.0);
+    height: 300px;
+}
+.footerWrapper {
+    max-width: 1500px;
+    margin: 0 auto;
+    padding-top: 100px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+.footerResources {
+    display: flex;
+    width: 300px;
+}
+.footerResources__list, .footerCompany__list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.footerWrapper ul li {
+    list-style-type: none;
+}

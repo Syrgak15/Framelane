@@ -1,0 +1,24 @@
+:root {
+    --fr-primary-color: #000;
+    --fr-secondary-color: #FFFFFF;
+    --fr-text-weight: 800;
+    --fr-font-family: "Comfortaa", sans-serif;
+    --fr-font-size: 45px;
+    --fr-font-size-secondary: 15px ;
+    --fr-text-transform: uppercase;
+}
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+a {
+    all: unset;
+}
+
+nextjs-portal {
+     display: none;
+ }
+.global-wrapper {
+     font-family:'Atlassian Sans';
+}

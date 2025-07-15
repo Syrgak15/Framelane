@@ -1,0 +1,42 @@
+.swiper-wrapper{
+    transition-timing-function : linear;
+}
+.banner {
+    font-weight: var(--fr-text-weight);
+}
+.bannerImage {
+    position: relative;
+    width: 100vw !important;
+}
+.bannerImage img {
+    width: 100%;
+    height: auto;
+}
+.bannerContent {
+    position: absolute;
+    width: 50%;
+    margin: 0 auto;
+    top: 595px;
+    left: -360px;
+    z-index: 10;
+    right: 0;
+}
+.bannerContent button {
+    background: red;
+    z-index: 100;
+}
+.bannerHeading {
+    font-family: var(--fr-font-family);
+    color: var(--fr-secondary-color);
+    user-select: none;
+}
+.bannerHeading .bannerHeading__tag {
+    font-size: var( --fr-font-size-secondary);
+}
+
+.bannerHeading .bannerHeading__title,
+.bannerHeading .bannerHeading__subtitle {
+    font-size: var(--fr-font-size);
+    text-transform: var(--fr-text-transform);
+    font-weight: var(--fr-text-weight);
+}

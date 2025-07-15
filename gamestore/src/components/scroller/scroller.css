@@ -1,0 +1,38 @@
+.scroller-wrapper {
+    overflow: hidden;
+    width: 100%;
+    background: #0e0e0e;
+    margin-top: 100px;
+}
+.scroller-wrapper:hover .scroller-track {
+    animation-play-state: paused
+}
+.scroller-track {
+    display: flex;
+    width: fit-content;
+    animation: scroll 30s linear infinite;
+    animation-play-state: running;
+    will-change: transform;
+}
+.scroller-element {
+    flex: 0 0 auto;
+    padding: 20px 100px;
+    margin: 10px;
+    color: white !important;
+    border-radius: 12px;
+    font-size: 42px;
+    white-space: nowrap;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+}
+
+
+
+@keyframes scroll {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}

@@ -1,0 +1,26 @@
+.sliderWrapper {
+    max-width: 1700px;
+    margin: 0 auto;
+    padding-top: 50px;
+    user-select: none;
+}
+
+.sliderWrapper__title {
+    font-family: var(--fr-font-family);
+    font-size: 20px;
+    text-align: center;
+    font-weight: var(--fr-text-weight);
+}
+
+.sliderWrapper__title h3 {
+    font-size: 20px;
+    padding-top: 15px;
+}
+
+.customSwiper {
+    margin-top: 40px;
+}
+
+.sliderWrapper__card {
+    text-align: center;
+}
