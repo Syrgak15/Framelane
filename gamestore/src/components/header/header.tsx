@@ -1,54 +1,70 @@
-'use client'
-import * as React from 'react';
+'use client';
+
+import React, {useEffect, useRef, useState} from 'react';
 import '@/components/header/header.css';
 import Link from 'next/link';
 import Image from 'next/image';
 import customerIcon from '../../../public/icons/customer.svg';
 import faveIcon from '../../../public/icons/faveicon.svg';
 import shoppingIcon from '../../../public/icons/shopping.svg';
-
+import { headerPageConfig } from '../../config/pages.config';
 
 const Header: React.FC = () => {
+    const [hidden, setHidden] = useState(false);
+    const lastScrollY = useRef(0);
 
-    const Links = [
-        'products',
-        'delivery',
-        'contacts',
-    ]
+    useEffect(() => {
+        const handleScroll = () => {
+            const currentScrollY = window.scrollY;
+
+            if (currentScrollY > lastScrollY.current && currentScrollY > 50) {
+                setHidden(true);
+            } else {
+                setHidden(false);
+            }
+
+            lastScrollY.current = currentScrollY;
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    const pageEntries = Object.entries(headerPageConfig);
 
     return (
-        <div className="headerWrapper">
-            <div className="headerLogo">
-                <Link className="headerLink" href="/">
-                    <div className="headerHeadings">
-                        <h1>Framelane</h1>
-                    </div>
-                </Link>
-            </div>
-
-            {Links.map((link, id) => (
-                <div key={id} className="headerNav">
-                    <Link className="headerLink" href={`/${link}`}>
-                        {link}
+        <div className={`header ${hidden ? 'header--hidden' : ''}`}>
+            <div className="header-wrapper">
+                <div className="header-logo">
+                    <Link className="header-link" href="/">
+                        <div className="header-headings">
+                            <h1>Framelane</h1>
+                        </div>
                     </Link>
                 </div>
-            ))}
 
-            <div className="headerNav">
-                <Link className="headerLink" href="#">
-                    <Image className="headerNav__icon" src={customerIcon} alt="Customer"/>
-                </Link>
-                <Link className="headerLink" href="#">
-                    <Image className="headerNav__icon" src={faveIcon} alt="Wishlist"/>
-                </Link>
-                <Link className="headerLink" href="#">
-                    <Image className="headerNav__icon" src={shoppingIcon} alt="Shopping"/>
-                </Link>
+                {pageEntries.map(([key, value]) => (
+                    <div key={key} className="header-nav">
+                        <Link className={`header-link header-link__${value}`} href={`${value}`}>
+                            {value}
+                        </Link>
+                    </div>
+                ))}
+
+                <div className="header-nav nav-icons">
+                    <Link className="header-link" href="#">
+                        <Image className="header-nav__icon" src={customerIcon} alt="Customer" />
+                    </Link>
+                    <Link className="header-link" href="#">
+                        <Image className="header-nav__icon" src={faveIcon} alt="Wishlist" />
+                    </Link>
+                    <Link className="header-link" href="#">
+                        <Image className="header-nav__icon" src={shoppingIcon} alt="Shopping" />
+                    </Link>
+                </div>
             </div>
         </div>
-
     );
 };
 
 export default Header;
-

@@ -1,0 +1,40 @@
+.contact-us__wrapper {
+    max-width: 1500px;
+    margin: 0 auto;
+    padding-top: 100px;
+    padding-bottom: 150px;
+}
+.contact-us__headings, .contact-us__faq-headings {
+    margin-top: 80px;
+    text-align: center;
+    margin-bottom: 50px;
+}
+.contact-us__headings .contact-us__headings-title {
+    color: var(--fr-primary-color);
+    font-size: 40px;
+    text-transform: uppercase;
+    font-weight: var(--fr-text-weight);
+    cursor: text;
+}
+.contact-us__support {
+    margin-top: 75px;
+    line-height: 3;
+}
+.contact-us__banner {
+    margin-left: 55px;
+}
+
+.contact-us__faq, .contact-us__address {
+    margin-top: 150px;
+}
+.contact-us__address {
+    display: flex;
+    justify-content: center;
+}
+.contact-us__address .contact-us__address-block {
+    width: 250px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    gap: 15px;
+}

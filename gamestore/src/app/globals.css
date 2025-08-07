@@ -2,8 +2,7 @@
     --fr-primary-color: #000;
     --fr-secondary-color: #FFFFFF;
     --fr-text-weight: 800;
-    --fr-font-family: "Comfortaa", sans-serif;
-    --fr-font-size: 45px;
+    --fr-font-size: 55px;
     --fr-font-size-secondary: 15px ;
     --fr-text-transform: uppercase;
 }
@@ -18,7 +17,4 @@ a {
 
 nextjs-portal {
      display: none;
- }
-.global-wrapper {
-     font-family:'Atlassian Sans';
 }

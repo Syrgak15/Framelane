@@ -31,10 +31,19 @@ export default function MediaCard({image, title, price}: MediaCardProps) {
                 <CardMedia
                     sx={{height: 500}}
                     image={image}
-                    title="green iguana"
                 />
-                <CardContent>
-                    <Typography gutterBottom variant="h5" component="div">
+                <CardContent
+                    sx={{paddingLeft: 0}}
+                >
+                    <Typography
+                        sx={{
+                            fontWeight: '800',
+                            fontSize: 17,
+                            textTransform: 'uppercase',
+                        }}
+                        gutterBottom
+                        variant="h5"
+                        component="div">
                         {title}
                     </Typography>
                     <Rating
@@ -42,11 +51,16 @@ export default function MediaCard({image, title, price}: MediaCardProps) {
                         readOnly
                         precision={0.5}
                         emptyIcon={<StarIcon style={{opacity: 0.55}} fontSize="inherit"/>}
-                    /> <Typography variant="h5" component="div">
+                    />
+                    <Typography
+                        sx={{fontSize: 17, fontWeight: 300}}
+                        variant="h5"
+                        component="div">
                     {price}
-                </Typography>
+                    </Typography>
                 </CardContent>
             </Card>
+
         </>
 
     );

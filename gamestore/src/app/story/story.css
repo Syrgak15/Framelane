@@ -1,0 +1,104 @@
+.story {
+    width: 100%;
+}
+
+.story__section {
+    width: 100%;
+}
+
+.story__container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-top: 60px;
+}
+
+.story__headings {
+    margin: 80px;
+    text-align: center;
+}
+
+.story__title {
+    color: var(--fr-primary-color);
+    font-size: 60px;
+    text-transform: capitalize;
+    font-weight: var(--fr-text-weight);
+    cursor: text;
+    padding-bottom: 30px;
+}
+
+.story__text {
+    font-size: 20px;
+    line-height: 40px;
+    padding: 0 15px;
+}
+
+.story__intro {
+    border-bottom: 1px solid #000;
+}
+
+.story__design {
+    background-color: #FFE196;
+    padding-bottom: 20px;
+}
+.story__people, .story__spaces {
+    display: flex;
+}
+.story__people-info, .story__spaces-info {
+    width: 50%;
+    overflow: hidden;
+    border: 1px solid var(--fr-primary-color);
+}
+.story__spaces-info {
+    border: unset !important;
+}
+.story__wrapper {
+    padding-top: 90px;
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+}
+.people--title {
+    text-align: left !important;
+    margin-bottom: 800px;
+}
+.story__people-image-wrapper, .story__spaces-image-wrapper{
+    border: 1px solid var(--fr-primary-color);
+    width: 50%;
+    height: auto;
+}
+.story__spaces-image-wrapper {
+    border-top: unset;
+}
+.story__people-image, .story__spaces-image {
+    width: 100%;
+    height: 100%;
+}
+.story__posts, .story__people-list {
+    border: 1px solid var(--fr-primary-color);
+}
+.story__posts-title {
+    margin-bottom: unset;
+}
+.story__posts-title .story__title {
+    text-transform: unset !important;
+}
+.story__people-list-image-wrapper {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+}
+.story__people-list-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.story__people-list-title {
+    z-index: 1000;
+    position: relative;
+    bottom: 6%;
+    color: #FFFFFF;
+    cursor: pointer;
+}
+

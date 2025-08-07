@@ -1,9 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
-import mainpageReducer from "../features/slices/mainpageReducer";
+import mainPageReducer from "../features/slices/mainPageReducer";
+import collectionsPageReducer from "../features/slices/collectionsPageReducer";
+import contactUsPageReducer from "../features/slices/contactUsPageReducer";
 
 export const store = configureStore({
     reducer: {
-        mainReducer: mainpageReducer,
+        mainReducer: mainPageReducer,
+        collectionReducer: collectionsPageReducer,
+        contactUsReducer : contactUsPageReducer,
     }
 })
 

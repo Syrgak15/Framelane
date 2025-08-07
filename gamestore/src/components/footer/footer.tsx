@@ -1,23 +1,30 @@
 import React from 'react';
 import '@/components/footer/footer.css'
+import Link from 'next/link';
+import {footerPageConfig, contactUsConfig} from "../../config/pages.config";
 
 const Footer:React.FC = () => {
+
+    const footerPageEntries = Object.entries(footerPageConfig);
+
     return (
         <div className="footer">
-            <div className="footerWrapper">
-                <div className="footerResources">
-                    <ul className="footerResources__list">
-                        <h2>RESOURCES</h2>
-                        <li className="footerResources__item">Wishlist</li>
-                        <li className="footerResources__item">Our Reviews</li>
-                        <li className="footerResources__item">Shop Instagram</li>
+            <div className="footer-wrapper">
+                <div className="footer-resources">
+                    <ul className="footer-resources__list">
+                        <h2 className="footer-resources__list-title">RESOURCES</h2>
+                        {footerPageEntries.map(([key, value]) => (
+                            <Link className="footer-resources__item" key={key} href={`pages/${value}`}>
+                                {value}
+                            </Link>
+                        ))}
                     </ul>
                 </div>
-                <div className="footerCompany">
-                    <ul className="footerCompany__list">
-                        <h2>COMPANY</h2>
-                        <li className="footerCompany__item">Contact Us</li>
-                        <li className="footerCompany__item">About Us</li>
+                <div className="footer-company">
+                    <ul className="footer-company__list">
+                        <h2 className="footer-resources__list-title">COMPANY</h2>
+                        <Link className="footer-company__item" href={contactUsConfig.CONTACTS}>Contact Us</Link>
+                        <Link className="footer-company__item" href={contactUsConfig.BRANDS}>Brands</Link>
                     </ul>
                 </div>
             </div>

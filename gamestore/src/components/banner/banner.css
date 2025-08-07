@@ -1,42 +1,28 @@
 .swiper-wrapper{
     transition-timing-function : linear;
 }
+.custom-swiper {
+    position: relative;
+}
 .banner {
     font-weight: var(--fr-text-weight);
 }
-.bannerImage {
+.banner-image {
     position: relative;
     width: 100vw !important;
 }
-.bannerImage img {
+.banner-image img {
     width: 100%;
     height: auto;
 }
-.bannerContent {
+.banner-slogan {
     position: absolute;
-    width: 50%;
-    margin: 0 auto;
-    top: 595px;
-    left: -360px;
+    top: 40%;
+    left: 11%;
     z-index: 10;
-    right: 0;
+    width: 600px;
 }
-.bannerContent button {
-    background: red;
-    z-index: 100;
-}
-.bannerHeading {
-    font-family: var(--fr-font-family);
-    color: var(--fr-secondary-color);
-    user-select: none;
-}
-.bannerHeading .bannerHeading__tag {
-    font-size: var( --fr-font-size-secondary);
-}
-
-.bannerHeading .bannerHeading__title,
-.bannerHeading .bannerHeading__subtitle {
-    font-size: var(--fr-font-size);
-    text-transform: var(--fr-text-transform);
-    font-weight: var(--fr-text-weight);
+.banner-slogan__content p {
+    font-size: 30px;
+    color: #FFFFFF;
 }

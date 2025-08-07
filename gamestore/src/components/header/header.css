@@ -1,69 +1,106 @@
-.headerWrapper {
+.header {
+    position: sticky;
+    top: 0;
+    z-index: 1000000;
+}
+.header-wrapper {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
     gap: 15px;
-    max-width: 1500px;
+    max-width: 1800px;
     margin: 0 auto;
-    height: 100px;
+    height: 70px;
     padding-bottom: 15px;
 }
-.headerLink {
+.header-link {
     display: flex;
     text-decoration: none;
     gap: 10px;
     margin-top: 15px;
     color: var(--fr-primary-color);
-    font-family: var(--fr-font-family);
     font-size: var(--fr-font-size-secondary);
     text-transform: uppercase;
+    cursor: pointer;
+    font-size: 17px;
+    font-weight: 800 !important;
 }
-.headerNav .headerLink {
-    font-weight: 600;
-    font-size: 20px;
-}
-.headerHeadings {
+.header-headings {
     display: flex;
     flex-direction: column;
 }
-.headerHeadings h1 {
+.header-headings h1 {
     color: var(--fr-primary-color);
     margin: unset;
 }
-.headerHeadings h3 {
+.header-headings h3 {
     margin: unset;
     text-align: end;
     color: rgba(0, 0, 0, 0.6);
     text-transform: uppercase;
     font-size: 14px;
 }
-.headerInput__form input {
-    border: 1px solid grey;
-    border-radius: 40px;
-    padding: 10px;
-    width: 350px;
-    height: 25px;
-}
-.headerInput__form input:focus-visible {
-    outline: none;
-}
-.headerInput__form {
-    position: relative;
-}
-.headerInput_icon {
-    position: absolute;
-    right: 3px;
-    background: #c4cfdf;
-    border-radius: 40px;
-    top: 3px;
-    padding: 4px;
-}
-.headerNav {
+.header-nav {
     display: flex;
     gap: 25px;
 }
-.headerNav__icon {
+.header-nav__icon {
     width: 20px;
     height: 20px;
+}
+
+@media screen and (max-width: 1024px) {
+    .header-wrapper {
+        flex-direction: column;
+        align-items: flex-start;
+        height: auto;
+        padding: 10px 15px;
+        gap: 10px;
+    }
+
+    .header-link {
+        font-size: 15px;
+        margin-top: 10px;
+    }
+
+    .header-headings {
+        align-items: flex-start;
+    }
+
+    .header-headings h1 {
+        font-size: 20px;
+    }
+
+    .header-headings h3 {
+        font-size: 12px;
+        text-align: left;
+    }
+
+    .header-nav {
+        width: 100%;
+        flex-direction: column;
+        gap: 15px;
+    }
+    .nav-icons {
+        flex-direction: row;
+    }
+
+    .header-nav__icon {
+        width: 18px;
+        height: 18px;
+    }
+}
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background-color: #FFFFFF;
+    transition: transform 0.3s ease;
+}
+
+.header--hidden {
+    transform: translateY(-100%);
 }

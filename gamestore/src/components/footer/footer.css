@@ -1,23 +1,33 @@
 .footer {
-    background-color: rgba(201 88 76 / 1.0);
+    background-color: #000;
     height: 300px;
+    color: #FFFFFF;
 }
-.footerWrapper {
+.footer-wrapper {
     max-width: 1500px;
     margin: 0 auto;
     padding-top: 100px;
     display: grid;
     grid-template-columns: 1fr 1fr;
 }
-.footerResources {
+.footer-resources {
     display: flex;
     width: 300px;
 }
-.footerResources__list, .footerCompany__list {
+.footer-resources__list, .footer-company__list {
     display: flex;
     flex-direction: column;
     gap: 15px;
 }
-.footerWrapper ul li {
+.footer-wrapper ul .footer-resources__item {
     list-style-type: none;
+}
+.footer-resources__item {
+    text-transform: capitalize;
+    font-family: Comfortaa, "Times New Roman", serif;
+    cursor: pointer;
+}
+.footer-company__item {
+    list-style-type: none;
+    cursor: pointer;
 }

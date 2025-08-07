@@ -1,71 +1,74 @@
 'use client'
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import {EffectFade, Autoplay} from 'swiper/modules';
 import Image from 'next/image'
 import 'swiper/css';
 import 'swiper/css/effect-fade';
 import '@/components/banner/banner.css';
+import {AppDispatch, RootState} from "../../store";
+import {useDispatch} from "react-redux";
+import {useAppSelector} from "../../store/hooks";
+import {postSlidesThenGetData} from "../../features/slices/mainPageReducer";
 
 const Banner: React.FC = () => {
 
-    const slides = [
-        '/background/banner_bg-zero.webp',
-        '/background/banner_bg-first.webp',
-        '/background/banner_bg-second.webp',
-    ];
+    const dispatch = useDispatch<AppDispatch>()
+    const slides = useAppSelector((state: RootState) => state.mainReducer.slides.data);
 
+    useEffect(() => {
+        dispatch(postSlidesThenGetData([
+            {
+                image: '/background/banner_bg-zero.webp',
+            },
+            {
+                image: '/background/banner_bg-first.webp',
+            },
+            {
+                image: '/background/banner_bg-second.webp',
+            },
+        ]))
+    }, [dispatch]);
 
     return (
         <>
             <Swiper
-                className="customSwiper"
+                className="custom-swiper"
                 modules={[EffectFade, Autoplay]}
                 effect="fade"
                 pagination={{
                     clickable: true,
                 }}
-                autoplay={{delay: 3000,
+                autoplay={{delay: 2500,
                     disableOnInteraction: false,
                     pauseOnMouseEnter: false,
                     }}
                 loop={true}
                 fadeEffect={{crossFade: true}}
             >
-                {slides.map((slide, index) => (
-                    <SwiperSlide key={index}>
-                        <div className="bannerImage">
-                            <Image
-                                src={slide}
-                                alt={'Banner'}
-                                width={2000}
-                                height={900}
-                            />
-                        </div>
-                    </SwiperSlide>
-                ))}
+                {Array.isArray(slides) && (slides.map((slide, i) => (
+                        <SwiperSlide key={i}>
+                            <div className="banner-image">
+                                <Image
+                                    src={slide.image}
+                                    alt={'Banner'}
+                                    width={2000}
+                                    height={900}
+                                />
+                            </div>
+                        </SwiperSlide>
+                    )))}
             </Swiper>
 
-            {/*<div className={style.bannerContent}>*/}
-            {/*    <div className={style.bannerHeading}>*/}
-            {/*        <h3 className={style.bannerHeading__tag}>*/}
-            {/*            DROPPING SOON*/}
-            {/*        </h3>*/}
-            {/*        <h2 className={style.bannerHeading__title}>*/}
-            {/*            Choose greatness*/}
-            {/*        </h2>*/}
-            {/*    </div>*/}
+            <div className="banner-slogan">
+                <div className="banner-slogan__content">
+                    <p>See yourself in a new light — with eyewear that frames your personality, <br/>
+                        fuels your confidence,<br/>
+                        and redefines your style story.
+                    </p>
+                </div>
+            </div>
 
-            {/*    <div className={style.bannerHeading}>*/}
-            {/*        <h2 className={style.bannerHeading__subtitle}>*/}
-            {/*            Choose us*/}
-            {/*        </h2>*/}
-            {/*    </div>*/}
-
-            {/*    <div className={style.bannerBtn}>*/}
-            {/*        <button>SHOP NOW</button>*/}
-            {/*    </div>*/}
-            {/*</div>*/}
         </>
 
     );
