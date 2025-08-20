@@ -2,13 +2,11 @@
 
 import React from 'react';
 import "./story.css";
-import Footer from '../../components/footer/footer';
 import Image from 'next/image';
 import Stack from '@mui/material/Stack';
-import posts from '../../data/data.json';
+import posts from '../../data/story-data.json';
 
 const Page: React.FC = () => {
-
     return (
         <>
             <div className="story">
@@ -121,8 +119,6 @@ const Page: React.FC = () => {
                     </div>
                 </section>
             </div>
-
-            <Footer/>
         </>
     );
 };

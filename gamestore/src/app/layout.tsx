@@ -5,9 +5,11 @@ import Header from '../components/header/header';
 import Reviews from "../floating-widgets/reviews/reviews";
 import Wishlists from "../floating-widgets/wishlists/wishlists";
 import { ReduxProvider } from '../app/provider/provider';
+import Footer from "../components/footer/footer";
+import Newsletter from "../components/newsletter/newsletter";
 
 
-export const comforta = Comfortaa({
+export const comfortaa = Comfortaa({
   subsets: ['latin'],
   display: 'swap',
 })
@@ -18,7 +20,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html className={comforta.className}>
+    <html className={comfortaa.className}>
     <body
         className="global-wrapper"
     >
@@ -27,6 +29,8 @@ export default function RootLayout({
       {children}
       <Reviews/>
       <Wishlists/>
+      <Newsletter/>
+      <Footer/>
     </ReduxProvider>
     </body>
     </html>

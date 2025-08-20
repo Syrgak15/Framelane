@@ -24,7 +24,6 @@ const Footer:React.FC = () => {
                     <ul className="footer-company__list">
                         <h2 className="footer-resources__list-title">COMPANY</h2>
                         <Link className="footer-company__item" href={contactUsConfig.CONTACTS}>Contact Us</Link>
-                        <Link className="footer-company__item" href={contactUsConfig.BRANDS}>Brands</Link>
                     </ul>
                 </div>
             </div>

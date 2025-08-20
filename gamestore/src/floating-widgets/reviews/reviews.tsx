@@ -8,7 +8,6 @@ import Divider from '@mui/material/Divider';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import StarRateRoundedIcon from '@mui/icons-material/StarRateRounded';
 import '@/floating-widgets/reviews/reviews.css';
-import {useEffect} from "react";
 
 
 export default function Reviews() {

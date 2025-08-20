@@ -2,7 +2,6 @@
 
 import React from 'react';
 import "./contacts.css";
-import Footer from '../../components/footer/footer';
 import GridLayout from '../../lib-components/GridLayout';
 import AccordionGridLayout from '../../lib-components/AccordionGridLayout';
 
@@ -40,7 +39,7 @@ const ContactsPage:React.FC = () => {
                     </div>
                 </div>
             </div>
-            <Footer/>
+
         </>
     );
 };

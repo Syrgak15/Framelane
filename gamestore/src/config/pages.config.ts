@@ -6,7 +6,6 @@ class HeaderPagesConfig {
 class ContactUsConfig {
     OWNER = "https://t.me/soladoraa";
     CONTACTS = "contacts";
-    BRANDS = "brands";
 }
 
 class FooterPagesConfig {

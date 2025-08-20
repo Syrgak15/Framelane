@@ -1,47 +1,27 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-
-interface DataPayload {
-    name: string;
-    image: string;
-    price: string | number;
-}
+import {createSlice, createAsyncThunk, PayloadAction} from '@reduxjs/toolkit';
 
 interface SlidesPayload {
     image: string;
 }
+export type Product = {
+    title: string;
+    slug: string;
+    image: string;
+    price: string;
+};
 
 interface MainState {
     loading: boolean;
     error: string | null;
-    result: any;
+    result: Product[];
     slides: any;
 }
 
-export const postThenGetData = createAsyncThunk(
-    'main/postThenGetData',
-    async (payload: DataPayload[]) => {
-        const postResponse = await fetch('/api/data', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload),
-        });
-
-        if (!postResponse.ok) {
-            throw new Error('Failed to post data');
-        }
-
-        const query = new URLSearchParams({
-            items: JSON.stringify(payload)
-        });
-
-        const getResponse = await fetch(`/api/data?${query.toString()}`);
-
-        if (!getResponse.ok) {
-            throw new Error('Failed to get data');
-        }
-
-        const data = await getResponse.json();
-
+export const getMainPageCollectionsData = createAsyncThunk(
+    'main/getMainPageCollectionsData',
+    async () => {
+        const res = await fetch("http://localhost:5000/products/", {cache: "no-store"},)
+        const data = await res.json();
         return data;
     }
 );
@@ -88,15 +68,15 @@ const mainReducer = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(postThenGetData.pending, (state) => {
+            .addCase(getMainPageCollectionsData.pending, (state) => {
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(postThenGetData.fulfilled, (state, action) => {
+            .addCase(getMainPageCollectionsData.fulfilled, (state, action) => {
                 state.loading = false;
                 state.result = action.payload;
             })
-            .addCase(postThenGetData.rejected, (state, action) => {
+            .addCase(getMainPageCollectionsData.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message ?? 'Unknown error';
             })

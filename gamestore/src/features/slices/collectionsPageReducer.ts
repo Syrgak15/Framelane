@@ -16,7 +16,7 @@ export const getCollectionsData = createAsyncThunk(
     'collection/getCollections',
      async () => {
          try {
-             const req = await fetch('https://framelane.free.beeceptor.com/collections');
+             const req = await fetch('http://localhost:5000/products', {cache: "no-store"});
              const data = await req.json()
 
              return data;

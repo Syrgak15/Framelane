@@ -7,8 +7,8 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
 
 type ContactUsProps = {
-    question: string,
-    answer: string,
+    question?: string,
+    answer?: string,
 }
 
 export default function AccordionExpandIcon({question, answer} : ContactUsProps) {
