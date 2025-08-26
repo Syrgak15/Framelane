@@ -46,12 +46,6 @@ export default function MediaCard({image, title, price}: MediaCardProps) {
                         component="div">
                         {title}
                     </Typography>
-                    <Rating
-                        name="text-feedback"
-                        readOnly
-                        precision={0.5}
-                        emptyIcon={<StarIcon style={{opacity: 0.55}} fontSize="inherit"/>}
-                    />
                     <Typography
                         sx={{fontSize: 17, fontWeight: 300}}
                         variant="h5"

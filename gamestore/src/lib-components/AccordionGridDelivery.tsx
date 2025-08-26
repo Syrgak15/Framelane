@@ -36,7 +36,8 @@ export default function AccordionExpandIcon({
                     },
                 }}
             >
-                <Typography sx={{ fontWeight: 600, fontSize: '1rem', color: 'text.primary' }}>
+                <Typography sx={{ fontWeight: 600, fontSize: '1rem', color: 'text.primary', fontFamily: 'Comfortaa',
+                }}>
                     {title}
                 </Typography>
             </AccordionSummary>
@@ -44,26 +45,26 @@ export default function AccordionExpandIcon({
             <AccordionDetails
                 sx={{ display: 'flex', flexDirection: 'column', gap: 1, p: 2 }}
             >
-                <Typography sx={{ fontWeight: 600, fontSize: '.9rem', mb: 0.5 }}>
+                <Typography sx={{ fontWeight: 600, fontFamily: 'Comfortaa', fontSize: '.9rem', mb: 0.5 }}>
                     Shipping options :
                 </Typography>
 
                 {deliveryShipping.map((item: string, id: number) => (
                     <Typography
                         key={id}
-                        sx={{ color: 'text.secondary', pl: 1, lineHeight: 1.6 }}
+                        sx={{ color: 'text.secondary', fontFamily: 'Comfortaa', pl: 1, lineHeight: 1.6 }}
                     >
                         • {item}
                     </Typography>
                 ))}
 
-                <Typography sx={{ mt: 1, fontSize: '.9rem' }}>
+                <Typography sx={{ mt: 1, fontSize: '.9rem', fontFamily: 'Comfortaa' }}>
                     <b>Cost:</b> {deliveryDetails.cost}
                 </Typography>
-                <Typography sx={{ fontSize: '.9rem' }}>
+                <Typography sx={{ fontSize: '.9rem', fontFamily: 'Comfortaa' }}>
                     <b>International:</b> {deliveryDetails.international}
                 </Typography>
-                <Typography sx={{ fontSize: '.9rem' }}>
+                <Typography sx={{ fontSize: '.9rem', fontFamily: 'Comfortaa' }}>
                     <b>Returns:</b> {deliveryDetails.returns}
                 </Typography>
             </AccordionDetails>

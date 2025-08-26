@@ -43,6 +43,7 @@ export default function BasicModal({slug} : {slug: string}) {
         defaultValues: { rating: 0, name: "", email: "", review: "" },
     });
 
+
     const onSubmit = async(data: FormValues) => {
         setFormSubmitted(true);
         await dispatch(postProductReview({slug, data}))
@@ -55,20 +56,24 @@ export default function BasicModal({slug} : {slug: string}) {
         });
     };
 
-
     return (
         <div>
             <Button
                 sx={{
-                    background: "#000",
-                    borderRadius: "10px",
-                    border: "1px solid grey",
-                    padding: "10px",
-                    width: "200px",
+                    borderRadius: "5px",
+                    border: "1px solid #000",
+                    padding: "10px 20px",
+                    textTransform: 'capitalize',
+                    backgroundColor: 'unset',
+                    color: '#000',
+                    boxShadow: 'unset',
+                    ":hover": {
+                        boxShadow: 'unset',
+                    }
                 }}
                 onClick={handleOpen}
                 variant="contained"
-            >Open modal</Button>
+            >Leave a review</Button>
             <Modal
                 open={open}
                 onClose={handleClose}
@@ -80,10 +85,10 @@ export default function BasicModal({slug} : {slug: string}) {
                         Leave us a review!
                     </Typography>
                     {!formSubmitted ? (
-                        <form onSubmit={handleSubmit(onSubmit)}>
+                        <form onSubmit={handleSubmit(onSubmit)} className="reviews__widget-form">
                             <input
                                 placeholder="Enter an email address"
-                                className="newsletter__input"
+                                className="reviews__input"
                                 type="email"
                                 {...register("email", {
                                     required: "Email is required",
@@ -95,7 +100,7 @@ export default function BasicModal({slug} : {slug: string}) {
                             />
                             <input
                                 placeholder="Enter your name"
-                                className="newsletter__input"
+                                className="reviews__input"
                                 type="text"
                                 {...register("name", {
                                     required: "Name is required",
@@ -103,7 +108,7 @@ export default function BasicModal({slug} : {slug: string}) {
                             />
                             <input
                                 placeholder="Write your surname"
-                                className="newsletter__input"
+                                className="reviews__input"
                                 type="text"
                                 {...register("surname", {
                                     required: "Review is required",
@@ -111,7 +116,7 @@ export default function BasicModal({slug} : {slug: string}) {
                             />
                             <input
                                 placeholder="Write your reviews"
-                                className="newsletter__input"
+                                className="reviews__input"
                                 type="text"
                                 {...register("review", {
                                     required: "Review is required",
@@ -132,12 +137,12 @@ export default function BasicModal({slug} : {slug: string}) {
                                 )}
                             />
 
-                            <button type="submit" className="newsletter--btn">
-                                <span>sign me up</span>
+                            <button type="submit" className="reviews__btn">
+                                <span>Submit a review</span>
                             </button>
                         </form>
                     ) : (
-                        <div className="newsletter--success__message">
+                        <div className="reviews__input-success-message">
                             Thank you! We are reviewing your feedback and will publish it soon.🖤
                         </div>
                     )}

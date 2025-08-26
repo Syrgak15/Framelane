@@ -60,15 +60,6 @@ export const postProductReview = createAsyncThunk<ProductReview, PostProductRevi
 );
 
 
-export const getProductReviews = createAsyncThunk<ProductReview[], string>(
-    'product/getProductReviews',
-    async (slug) => {
-        const res = await fetch(`http://localhost:5000/reviews/${slug}`);
-        if (!res.ok) throw new Error(`Reviews not found: ${res.status}`);
-        return await res.json() as ProductReview[];
-    }
-);
-
 
 const productReducer = createSlice({
     name: 'products',
@@ -82,9 +73,7 @@ const productReducer = createSlice({
             .addCase(postProductReview.fulfilled, (state, action) => {
                 state.reviews.push(action.payload);
             })
-            .addCase(getProductReviews.fulfilled, (state, action) => {
-                state.reviews = action.payload;
-            });
+
     },
 });
 

@@ -59,3 +59,10 @@
 .swiper-button-next::after, .swiper-button-prev::after {
     font-size: 22px !important;
 }
+.star {
+    color: #cbd5e1;
+    transition: color 0.2s ease;
+}
+.star.is-on {
+    color: #000;
+}

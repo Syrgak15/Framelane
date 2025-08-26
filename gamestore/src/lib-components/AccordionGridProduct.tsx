@@ -39,7 +39,7 @@ export default function AccordionExpandIcon({
                     },
                 }}
             >
-                <Typography sx={{ fontWeight: 600, fontSize: '2rem', color: 'text.primary' }}>
+                <Typography sx={{ fontWeight: 600, fontSize: '2rem', color: 'text.primary', fontFamily: 'Comfortaa' }}>
                     {title}
                 </Typography>
             </AccordionSummary>
@@ -47,25 +47,25 @@ export default function AccordionExpandIcon({
             <AccordionDetails
                 sx={{ display: 'flex', flexDirection: 'column', gap: 1, p: 2 }}
             >
-                <Typography sx={{ color: 'text.primary', mb: 1 }}>
+                <Typography sx={{ color: 'text.primary', mb: 1, fontFamily: 'Comfortaa' }}>
                     {productDescription}
                 </Typography>
                 <Typography
-                    sx={{ fontWeight: 600, fontSize: '.9rem', mb: 0.5 }}
+                    sx={{ fontWeight: 600, fontSize: '.9rem', mb: 0.5, fontFamily: 'Comfortaa' }}
                 >
                     Main Features :
                 </Typography>
                 {productFeatures.map((feature: string, id: number) => (
                     <Typography
                         key={id}
-                        sx={{ color: 'text.secondary', pl: 1, lineHeight: 1.6 }}
+                        sx={{ color: 'text.secondary', pl: 1, lineHeight: 1.6, fontFamily: 'Comfortaa' }}
                     >
                         • {feature}
                     </Typography>
                 ))}
 
                 {productDetails.size && (
-                    <Typography sx={{ mt: 1, fontWeight: 500 }}>
+                    <Typography sx={{ mt: 1, fontWeight: 500, fontFamily: 'Comfortaa' }}>
                         Size: {productDetails.size}
                     </Typography>
                 )}

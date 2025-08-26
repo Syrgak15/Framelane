@@ -1,34 +1,30 @@
 'use client'
-import React, {useEffect} from 'react';
+import React, {} from 'react';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import {EffectFade, Autoplay} from 'swiper/modules';
 import Image from 'next/image'
 import 'swiper/css';
 import 'swiper/css/effect-fade';
 import '@/components/banner/banner.css';
-import {AppDispatch, RootState} from "../../store";
-import {useDispatch} from "react-redux";
-import {useAppSelector} from "../../store/hooks";
-import {postSlidesThenGetData} from "../../features/slices/mainPageReducer";
+
+type Slides = {
+    image: string;
+}
 
 const Banner: React.FC = () => {
 
-    const dispatch = useDispatch<AppDispatch>()
-    const slides = useAppSelector((state: RootState) => state.mainReducer.slides.data);
+    const slides : Slides[] = [
+        {
+            image: '/background/banner_bg-zero.webp',
+        },
+        {
+            image: '/background/banner_bg-first.webp',
+        },
+        {
+            image: '/background/banner_bg-second.webp',
+        },
+    ]
 
-    useEffect(() => {
-        dispatch(postSlidesThenGetData([
-            {
-                image: '/background/banner_bg-zero.webp',
-            },
-            {
-                image: '/background/banner_bg-first.webp',
-            },
-            {
-                image: '/background/banner_bg-second.webp',
-            },
-        ]))
-    }, [dispatch]);
 
     return (
         <>

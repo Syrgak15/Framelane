@@ -23,5 +23,4 @@ export class Review {
 
     @ManyToOne(() => Product, (product) => product.reviews, { nullable: false })
     product!: Product;
-
 }

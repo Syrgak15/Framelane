@@ -95,6 +95,21 @@ AppDataSource.initialize().then(async () => {
         }
     });
 
+    app.get("/reviews", async (req, res) => {
+        try {
+            const reviewRepo = AppDataSource.getRepository(Review);
+            const reviews = await reviewRepo.find({
+                relations: ["product"],
+            });
+
+            return res.json(reviews);
+        } catch (e) {
+            console.error(e);
+            return res.status(500).json({ error: "Server error" });
+        }
+    });
+
+
     app.get("/product/:slug", async (req, res) => {
         const { slug } = req.params;
         const product = await repo.findOneBy({ slug });

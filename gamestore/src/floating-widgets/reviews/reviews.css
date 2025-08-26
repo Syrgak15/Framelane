@@ -10,7 +10,10 @@
     border-radius: 0 0 22px 22px;
     display: flex;
     justify-content: center;
+    font-family: var(--fr-font-family);
+
 }
+
 .reviews-drawer__list {
     z-index: 10001;
 }
@@ -35,7 +38,6 @@
     color: hsl(221, 73%, 16%);
     font-size: 20px;
     font-weight: bold;
-    font-family: Geist, sans-serif;
 }
 .reviews-drawer__heading .reviews-drawer__close-icon {
     background: none;
@@ -45,14 +47,13 @@
 .reviews-drawer__subheading .reviews-drawer__star .reviews-drawer__average {
     color: hsl(221, 73%, 16%);
     font-size: 20px;
-    font-family: Geist, sans-serif;
     display: inline-block;
     padding-right: 10px;
 }
 .reviews-drawer__subheading .reviews-drawer__star .reviews-drawer__total {
     color: hsl(221, 73%, 16%);
     font-size: 15px;
-    font-family: Geist, sans-serif;
+    font-family: var(--fr-font-family);
 }
 .reviews-drawer__btn button{
     background: none;
@@ -61,4 +62,56 @@
     font-size: 15px;
     text-transform: none;
 }
+.reviews__drawer-content, .reviews__content-list-item-text, .reviews__content-list-item-headings {
+    margin-top: 20px;
+}
+.reviews__drawer-container {
+    padding: 15px 15px 25px 15px;
+}
+.reviews__content-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    position: relative;
+}
+.reviews__content-list-item {
+    list-style-type: none;
+    border: 1px solid rgba(0, 0, 0, 0.45);
+    border-radius: 10px;
+    padding: 40px 20px;
+}
+.reviews__content-list-item-link {
+    padding-left: 5px;
+    cursor: pointer;
+    color: rgba(0, 0, 0, 0.45);
+    text-decoration: underline;
+}
+.reviews__content-list-item-stars {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.reviews__content-list-item-stars .star {
+    color: #cbd5e1;
+    transition: color 0.2s ease;
+}
+
+.reviews__content-list-item-stars .star.is-on {
+    color: #000;
+}
+
+.reviews__content-list-item-date {
+    margin-left: auto;
+    color: #64748b;
+    font-size: 0.85rem;
+    font-weight: 500;
+    white-space: nowrap;
+}
+.reviews__content-list-item-text p{
+    font-size: 20px;
+    line-height: 27px;
+}
+
 

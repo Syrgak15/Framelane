@@ -10,9 +10,13 @@ import Newsletter from "../components/newsletter/newsletter";
 
 
 export const comfortaa = Comfortaa({
-  subsets: ['latin'],
+  subsets: ['latin', 'cyrillic'],
   display: 'swap',
 })
+
+export const metadata = {
+  title: 'Framelane',
+};
 
 export default function RootLayout({
   children,
@@ -20,9 +24,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html className={comfortaa.className}>
+    <html>
     <body
-        className="global-wrapper"
+        className={comfortaa.className}
     >
     <ReduxProvider>
       <Header/>

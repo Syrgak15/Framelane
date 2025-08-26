@@ -1,11 +1,23 @@
-import {serverStore} from "../../serverStore/index";
-import {getMainPageCollectionsData} from "../../features/slices/mainPageReducer";
 import MainPageClient from "./MainPageClient";
 
-export default async function MainPage() {
-    console.log(serverStore);
-    await serverStore.dispatch(getMainPageCollectionsData());
-    const state = serverStore.getState();
-    console.log(state);
-    // return <MainPageClient initialValue={state}/>
+async function getCollectionsData() {
+    const res = await fetch(`http://localhost:5000/reviews`, {
+        cache: "no-store",
+    });
+
+    if (!res.ok) {
+        return [];
+    }
+
+    return res.json();
 }
+
+async function MainPage({}) {
+
+    const getGlassesData = await getCollectionsData();
+
+    return <MainPageClient
+        glassesData={getGlassesData}
+    />
+}
+export default MainPage;

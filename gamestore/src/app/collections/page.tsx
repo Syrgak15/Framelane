@@ -11,7 +11,6 @@ import Link from "next/link";
 
 type SortOrder = "asc" | "desc";
 
-
 async function fetchCollectionsOnServer() {
     await store.dispatch(getCollectionsData() as any);
 }
@@ -71,7 +70,7 @@ export default function CollectionsPage () {
 
                 <div className="collections-grid">
                     {sortedPosts.map((post) => (
-                        <Link key={post.id} href={`/product/${post.slug}`}>
+                        <Link key={post.id} href={`/product/${post.slug}`} target="_blank">
                             <MediaCollectionCard title={post.title} image={post.image} price={post.price} />
                         </Link>
                     ))}
