@@ -1,3 +1,4 @@
+'use client'
 
 import React from "react";
 import "./slug.css"
@@ -8,8 +9,8 @@ import highlights from "../../../data/product-page-data.json";
 import CheckIcon from '@mui/icons-material/Check';
 import AccordionGridProduct from "../../../lib-components/AccordionGridProduct";
 import AccordionGridDelivery from "../../../lib-components/AccordionGridDelivery";
-import ModalPopUp from "../../../lib-components/ModalPopUp";
-import ReviewsWidget from "../ReviewsWidget";
+import {useAppDispatch} from "../../../store/hooks";
+import {addProductToWishlist} from "../../../features/slices/productPageReducer";
 
 type Product = {
     id: number;
@@ -20,9 +21,14 @@ type Product = {
 };
 
 
-export default async function ProductPage({ productInfo } : {productInfo: Product}) {
+export default function ProductPage({ productInfo } : {productInfo: Product}) {
+    const dispatch = useAppDispatch();
 
+    const data = productInfo;
 
+    const addToWishlist = async () => {
+        await dispatch(addProductToWishlist({data}))
+    }
 
     return <div className="product">
         <div className="product__wrapper">
@@ -54,6 +60,7 @@ export default async function ProductPage({ productInfo } : {productInfo: Produc
                                 }}
                                 variant="contained">Buy it now</Button>
                             <Button
+                                onClick={addToWishlist}
                                 sx={{
                                     border: "1px solid 3d6da3",
                                     borderRadius: "40px",
@@ -89,9 +96,6 @@ export default async function ProductPage({ productInfo } : {productInfo: Produc
                         title="Delivery"
                     />
                 </div>
-            </div>
-            <div className="product__reviews-widget">
-                <ReviewsWidget slug={productInfo.slug}/>
             </div>
         </div>
     </div>

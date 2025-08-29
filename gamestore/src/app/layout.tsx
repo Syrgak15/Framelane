@@ -3,7 +3,7 @@ import {Comfortaa} from 'next/font/google'
 import React from 'react'
 import Header from '../components/header/header';
 import Reviews from "../floating-widgets/reviews/reviews";
-import Wishlists from "../floating-widgets/wishlists/wishlists";
+import Wishlists from "../floating-widgets/wishlists/[slug]/wishlists";
 import { ReduxProvider } from '../app/provider/provider';
 import Footer from "../components/footer/footer";
 import Newsletter from "../components/newsletter/newsletter";

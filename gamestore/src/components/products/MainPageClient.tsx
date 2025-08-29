@@ -5,9 +5,28 @@ import MediaCard from "../../lib-components/MediaCard";
 import Link from 'next/link';
 import { headerPageConfig } from '../../config/pages.config';
 import { productConfig } from '../../config/pages.config';
-import { Reviews } from '../../floating-widgets/reviews/ReviewsClientComponent';
-import filteringObject  from "../../utils/UniqueByObjects";
 
+type Reviews = {
+    product: {
+        id: number;
+        title: string;
+        slug: string;
+        image: string;
+        price: string;
+        product: {
+            description: string;
+            features: string[];
+            materials: string;
+            size: string;
+        };
+        delivery: {
+            shipping_options: string[];
+            cost: string;
+            returns: string;
+            international: string;
+        };
+    };
+}
 
 type Props = {
     glassesData: Reviews[];
@@ -15,7 +34,7 @@ type Props = {
 
 const MainPageClient: React.FC<Props> = ({glassesData}) => {
 
-    const filteredGlasses = filteringObject(glassesData, ['product.title', 'product.image']).slice(0, 4)
+    const filteredGlasses = glassesData;
 
 
     return <>
@@ -29,8 +48,8 @@ const MainPageClient: React.FC<Props> = ({glassesData}) => {
             {filteredGlasses && (
                 <ul className="products-list">
                     {filteredGlasses.map((glass, index) => (
-                        <Link href={`/${productConfig.PRODUCT}/${glass.product.slug}`} key={index} target="_blank">
-                            <MediaCard key={index} image={glass.product.image} title={glass.product.title} price={glass.product.price}/>
+                        <Link href={`/${productConfig.PRODUCT}/${glass.slug}`} key={index} target="_blank">
+                            <MediaCard key={index} image={glass.image} title={glass.title} price={glass.price}/>
                         </Link>
                     ))}
                 </ul>

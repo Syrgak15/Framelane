@@ -1,7 +1,7 @@
 import SliderClientComponent from "./SliderClientComponent";
 
 async function getSliderReviews () {
-    const res = await fetch(`http://localhost:5000/reviews`, {
+    const res = await fetch(`http://localhost:5000/reviews?limit=15`, {
         cache: "no-store",
     })
 

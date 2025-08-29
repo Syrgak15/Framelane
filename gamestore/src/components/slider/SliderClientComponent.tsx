@@ -25,7 +25,6 @@ type SliderProps = {
 export default function Slider({slides} : {slides: SliderProps[]}) {
 
     const uniqueSlides = uniqueBy(slides,["email", "review", "product.image", "name"])
-    const limitedSlides = uniqueSlides.slice(0, 15);
 
     return (
         <div className="slider-wrapper">
@@ -45,7 +44,7 @@ export default function Slider({slides} : {slides: SliderProps[]}) {
                 pagination={true}
                 modules={[Navigation]}
             >
-                {limitedSlides?.map((slide, index) => (
+                {uniqueSlides?.map((slide, index) => (
                         <SwiperSlide
                             key={index}>
                             <Card
@@ -53,7 +52,9 @@ export default function Slider({slides} : {slides: SliderProps[]}) {
                                 sx={{
                                     cursor: 'pointer',
                                     boxShadow: 'unset',
-                                    padding: 'unset'
+                                    padding: 'unset',
+                                    maxHeight: '350px',
+                                    overflow: 'hidden'
                                 }}>
                                 <Link href={`/${productConfig.PRODUCT}/${slide.product.slug}`} key={index} target="_blank">
                                     <CardMedia

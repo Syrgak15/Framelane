@@ -8,6 +8,7 @@ import customerIcon from '../../../public/icons/customer.svg';
 import faveIcon from '../../../public/icons/faveicon.svg';
 import shoppingIcon from '../../../public/icons/shopping.svg';
 import { headerPageConfig } from '../../config/pages.config';
+import { footerPageConfig } from '../../config/pages.config';
 
 const Header: React.FC = () => {
     const [hidden, setHidden] = useState(false);
@@ -55,7 +56,7 @@ const Header: React.FC = () => {
                     <Link className="header-link" href="#">
                         <Image className="header-nav__icon" src={customerIcon} alt="Customer" />
                     </Link>
-                    <Link className="header-link" href="#">
+                    <Link className="header-link" href={`/pages/${footerPageConfig.WISHLISTS}`}>
                         <Image className="header-nav__icon" src={faveIcon} alt="Wishlist" />
                     </Link>
                     <Link className="header-link" href="#">

@@ -11,22 +11,10 @@ type Review = {
     rating: number;
     review: string;
     createdAt: string;
+    slug: string;
 };
 
-async function getReviews(slug: string): Promise<Review[]> {
-    const res = await fetch(`http://localhost:5000/reviews/${slug}`, {
-        cache: "no-store",
-    });
-
-    if (!res.ok) {
-        return [];
-    }
-
-    return res.json();
-}
-
-export default async function ReviewsWidget({ slug }: { slug: string }) {
-    const reviews = await getReviews(slug);
+export default async function ReviewsWidget({ reviews, slug }: { reviews: Review[], slug: string }) {
     const dateSortOrder = "desc";
 
     const sortedReviews = [...reviews].sort((a, b) => {
@@ -45,7 +33,6 @@ export default async function ReviewsWidget({ slug }: { slug: string }) {
             key={i}
         />
     ))
-
 
     return (
         <div className="product__reviews-main">

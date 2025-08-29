@@ -20,13 +20,37 @@ type PostProductReviewArgs = {
     data: ProductReview;
 };
 
+export type WishlistProduct = {
+    id: number;
+    title: string;
+    slug: string;
+    image: string;
+    price: string;
+    rating: number | null;
+};
+
+export type addToWishlistArgs = {
+    data: {
+        id?: number;
+        title: string;
+        image?: string | null;
+        price?: string | null;
+        rating?: number | null;
+    };
+};
+
+type ApiError = { error: string };
+
+
 type ProductPageState = {
     currentProduct: Product | null;
     reviews: ProductReview[];
+    wishlist: WishlistProduct[];
 }
 const initialState: ProductPageState = {
     currentProduct: null,
-    reviews: []
+    reviews: [],
+    wishlist: [],
 }
 
 export const fetchProductBySlug = createAsyncThunk<Product, string>(
@@ -60,6 +84,37 @@ export const postProductReview = createAsyncThunk<ProductReview, PostProductRevi
 );
 
 
+export const addProductToWishlist = createAsyncThunk<
+    WishlistProduct,
+    addToWishlistArgs,
+    { rejectValue: ApiError }
+>(
+    'product/addProductToWishlist',
+    async ({ data }, { rejectWithValue }) => {
+        try {
+            const res = await fetch(`http://localhost:5000/wishlist`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data),
+            });
+
+            const payload = await res.json();
+
+            if (!res.ok) {
+                return rejectWithValue(payload as ApiError);
+            }
+
+            const item = (payload?.item ?? payload) as WishlistProduct;
+
+            console.log(item)
+            return item;
+        } catch {
+            return rejectWithValue({ error: 'Network error' });
+        }
+    }
+);
+
+
 
 const productReducer = createSlice({
     name: 'products',
@@ -72,6 +127,9 @@ const productReducer = createSlice({
             })
             .addCase(postProductReview.fulfilled, (state, action) => {
                 state.reviews.push(action.payload);
+            })
+            .addCase(addProductToWishlist.fulfilled, (state, action) => {
+                state.wishlist.push(action.payload);
             })
 
     },

@@ -1,8 +1,7 @@
-.product__wrapper {
+.product__wrapper, .product__reviews-container {
     max-width: 1800px;
     margin: 0 auto;
     padding-bottom: 250px;
-
 }
 .product__breadcrumbs {
     margin-bottom: 50px;

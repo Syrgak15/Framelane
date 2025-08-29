@@ -4,6 +4,7 @@ import cors from "cors";
 import {DataSource, DeepPartial } from "typeorm";
 import { Product } from "./entities/Product";
 import {Review} from "./entities/Review";
+import {Wishlist} from "./entities/Wishlist";
 
 const app = express();
 app.use(cors());
@@ -14,18 +15,20 @@ const AppDataSource = new DataSource({
     database: "db.sqlite",
     synchronize: true,
     logging: true,
-    entities: [Product, Review],
+    entities: [Product, Review, Wishlist],
 });
 
 AppDataSource.initialize().then(async () => {
     const repo = AppDataSource.getRepository(Product);
+    const wishlistRepo = AppDataSource.getRepository(Wishlist);
     const PORT = process.env.PORT || 5000;
     app.get("/", (req, res) => {
         res.send(`Server is running on port✅`);
     });
 
     app.get("/products", async (req, res) => {
-        const products = await repo.find();
+        const limit = parseInt(req.query.limit as string) || 5;
+        const products = await repo.find({take: limit});
         res.json(products);
     });
 
@@ -97,9 +100,11 @@ AppDataSource.initialize().then(async () => {
 
     app.get("/reviews", async (req, res) => {
         try {
+            const limit = parseInt(req.query.limit as string) || 5;
             const reviewRepo = AppDataSource.getRepository(Review);
             const reviews = await reviewRepo.find({
                 relations: ["product"],
+                take: limit,
             });
 
             return res.json(reviews);
@@ -109,7 +114,6 @@ AppDataSource.initialize().then(async () => {
         }
     });
 
-
     app.get("/product/:slug", async (req, res) => {
         const { slug } = req.params;
         const product = await repo.findOneBy({ slug });
@@ -118,6 +122,67 @@ AppDataSource.initialize().then(async () => {
         }
         res.json(product);
     });
+
+    app.post("/wishlist", async (req, res) => {
+        try {
+            const { id, title, image, price, rating } = req.body || {};
+
+            if (!title || typeof title !== "string" || !title.trim()) {
+                return res.status(400).json({ error: 'Field "title" is required' });
+            }
+
+            let numericRating: number | null = null;
+            if (rating !== undefined && rating !== null && rating !== "") {
+                const n = Number(rating);
+                if (!Number.isFinite(n)) {
+                    return res.status(400).json({ error: 'Field "rating" must be a number' });
+                }
+                numericRating = n;
+            }
+
+            let item;
+            if (id) {
+                // если указан id → ищем и обновляем
+                item = await wishlistRepo.findOne({ where: { id } });
+                if (item) {
+                    item.title = title.trim();
+                    if (image !== undefined) item.image = image;
+                    if (price !== undefined) item.price = price;
+                    if (numericRating !== null) item.rating = numericRating;
+
+                    item = await wishlistRepo.save(item);
+                    return res.status(200).json({ status: "updated", item });
+                }
+            }
+
+            // если нет id или не нашли → создаём новый
+            const draft: DeepPartial<Wishlist> = {
+                id: typeof id === "number" ? id : undefined,
+                title: title.trim(),
+                image: image ?? null,
+                price: price ?? null,
+                rating: numericRating,
+            };
+
+            const created = await wishlistRepo.save(wishlistRepo.create(draft));
+            return res.status(201).json({ status: "created", item: created });
+        } catch (e) {
+            console.error(e);
+            return res.status(500).json({ error: "Server error" });
+        }
+    });
+
+    app.get("/wishlist", async (_req, res) => {
+        try {
+            const wishlistItems = await wishlistRepo.find();
+            res.json(wishlistItems);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: "Server error" });
+        }
+    });
+
+
 
     app.listen(PORT, () => {
         console.log(`🚀 Server running on http://localhost:${PORT}`);

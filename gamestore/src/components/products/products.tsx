@@ -1,7 +1,7 @@
 import MainPageClient from "./MainPageClient";
 
 async function getCollectionsData() {
-    const res = await fetch(`http://localhost:5000/reviews`, {
+    const res = await fetch(`http://localhost:5000/products?limit=4`, {
         cache: "no-store",
     });
 
