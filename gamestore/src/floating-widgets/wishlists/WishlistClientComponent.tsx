@@ -7,12 +7,13 @@ import Button from '@mui/material/Button';
 import './wishlists.css'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-import Divider from "@mui/material/Divider";
-import EmptyWishlistComponent from '../EmptyWishlistComponent';
-import {footerPageConfig, productConfig} from '../../../config/pages.config';
+import EmptyWishlistComponent from './EmptyWishlistComponent';
+import {footerPageConfig, productConfig} from '../../config/pages.config';
 import Link from 'next/link';
-import MediaCard from "../../../lib-components/MediaCard";
-import sortArray from "../../../utils/SortArray";
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import sortArray from "../../utils/SortArray";
+import WishlistCard from '../../lib-components/WishlistCard';
+import {useState} from "react";
 
 type Anchor = 'top' | 'left' | 'bottom' | 'right';
 
@@ -29,6 +30,7 @@ export default function Wishlists({wishlistItems} : {wishlistItems : WishlistPro
     const [state, setState] = React.useState({
         right: false
     });
+    const [expanded, setExpanded] = useState(false);
 
     const sortedWishlistData = sortArray(wishlistItems, "desc");
 
@@ -85,13 +87,36 @@ export default function Wishlists({wishlistItems} : {wishlistItems : WishlistPro
                             + Add a new list
                         </Button>
                     </div>
-                    <Divider sx={{marginTop: '35px'}}/>
+                    <div className="wishlist__root-list-header">
+                        <div
+                            onClick={() => setExpanded(!expanded)}
+                            className="wishlist__root-list-title"
+                        >
+                            <ArrowDropDownIcon
+                                sx={{
+                                    transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)',
+                                    transition: 'transform 0.3s',
+                                    color: '#777E90',
+                                }}
+                            />
+                            <span>Favorites ({sortedWishlistData.length})</span>
+
+                        </div>
+                        <div className="wishlist__root-list-divider"></div>
+                        <div className="wishlist__root-list-options">
+                            <button className="wishlist__root-list-options-btn">
+                                <p className="wishlist__root-list-options-text">
+                                    Options
+                                </p>
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 {sortedWishlistData ? (
-                    <ul className="wishlists__list">
+                    <ul className={`wishlists__list ${expanded ? '' : 'hidden'}`}>
                         {sortedWishlistData.map((item, id) => (
                                 <Link href={`/${productConfig.PRODUCT}/${item.slug}`} key={id} target="_blank">
-                                    <MediaCard key={id} image={item.image} title={item.title} price={item.price}/>
+                                    <WishlistCard key={id} image={item.image} title={item.title} price={item.price}/>
                                 </Link>
                             )
                         )}

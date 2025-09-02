@@ -8,14 +8,14 @@ export class Wishlist {
     @Column()
     title!: string;
 
-    @Column({ unique: true })
+    @Column({ unique: true, type: "text" })
     slug!: string;
 
     @Column()
     image!: string;
 
-    @Column()
-    price!: string;
+    @Column("real", { nullable: true })
+    price!: number | null;
 
     @Column({ type: "float", nullable: true })
     rating?: number | null;

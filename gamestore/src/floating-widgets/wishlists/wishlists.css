@@ -1,3 +1,4 @@
+
 .wishlists {
     background: #000;
     border: 1px solid #FFFFFF;
@@ -46,6 +47,37 @@
 .wishlist_root-link, .wishlist__root-close-icon {
     cursor: pointer;
 }
-.wishlist__root-add-btn {
+.wishlist__root-add-btn, .wishlists__list  {
     margin-top: 30px;
+}
+.wishlists__list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+.wishlist__root-list-header {
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: 40px;
+}
+.wishlist__root-list-divider {
+    height: 1px;
+    width: 40%;
+    background: #302e2e;
+    margin-top: 10px;
+}
+.wishlist__root-list-title {
+    cursor: pointer;
+    display: flex;
+    gap: 5px;
+}
+.wishlists__list.hidden {
+    display: none;
+    margin: 0;
+    padding: 0;
+}
+.wishlist__root-list-options-btn {
+    background: transparent;
+    border: unset;
+    cursor: pointer;
 }

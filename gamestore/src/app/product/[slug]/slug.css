@@ -257,3 +257,7 @@
     color: rgba(0, 0, 0, 0.35);
     font-size: 13px;
 }
+
+.product__btns.active {
+    background-color: #2f2f2f;
+}

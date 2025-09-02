@@ -26,7 +26,7 @@ export type WishlistProduct = {
     slug: string;
     image: string;
     price: string;
-    rating: number | null;
+    rating?: number | null;
 };
 
 export type addToWishlistArgs = {
@@ -106,7 +106,6 @@ export const addProductToWishlist = createAsyncThunk<
 
             const item = (payload?.item ?? payload) as WishlistProduct;
 
-            console.log(item)
             return item;
         } catch {
             return rejectWithValue({ error: 'Network error' });
@@ -114,6 +113,30 @@ export const addProductToWishlist = createAsyncThunk<
     }
 );
 
+export const deleteProductFromWishlist = createAsyncThunk<
+    WishlistProduct,
+    addToWishlistArgs
+>(
+    'product/deleteProductFromWishlist',
+    async ({ data }) => {
+        try {
+            const res = await fetch(`http://localhost:5000/wishlist`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data),
+            });
+
+            const payload = await res.json();
+
+            if (!res.ok) {
+                return new Error();
+            }
+            return payload;
+        } catch(e) {
+            console.error(e);
+        }
+    }
+);
 
 
 const productReducer = createSlice({
@@ -131,7 +154,9 @@ const productReducer = createSlice({
             .addCase(addProductToWishlist.fulfilled, (state, action) => {
                 state.wishlist.push(action.payload);
             })
-
+            .addCase(deleteProductFromWishlist.fulfilled, (state, action) => {
+                state.wishlist.push(action.payload);
+            })
     },
 });
 

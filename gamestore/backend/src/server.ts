@@ -124,53 +124,130 @@ AppDataSource.initialize().then(async () => {
     });
 
     app.post("/wishlist", async (req, res) => {
+        const toNumberOrNull = (v: unknown): number | null | "NaN" => {
+            if (v === undefined || v === null || v === "") return null;
+            const cleaned = String(v).replace(/[^\d.\-+]/g, "");
+            const n = Number(cleaned);
+            return Number.isFinite(n) ? n : "NaN";
+        };
+
+        const toIntOrNull = (v: unknown): number | null => {
+            if (v === undefined || v === null || v === "") return null;
+            const n = Number(v);
+            return Number.isInteger(n) ? n : null;
+        };
+
         try {
-            const { id, title, image, price, rating } = req.body || {};
+            const { id: rawId, title, slug, image, price, rating } = req.body || {};
 
             if (!title || typeof title !== "string" || !title.trim()) {
                 return res.status(400).json({ error: 'Field "title" is required' });
             }
-
-            let numericRating: number | null = null;
-            if (rating !== undefined && rating !== null && rating !== "") {
-                const n = Number(rating);
-                if (!Number.isFinite(n)) {
-                    return res.status(400).json({ error: 'Field "rating" must be a number' });
-                }
-                numericRating = n;
+            if (!slug || typeof slug !== "string" || !slug.trim()) {
+                return res.status(400).json({ error: 'Field "slug" is required' });
             }
 
-            let item;
-            if (id) {
-                // если указан id → ищем и обновляем
-                item = await wishlistRepo.findOne({ where: { id } });
+            const numericPrice = toNumberOrNull(price);
+            if (numericPrice === "NaN") {
+                return res.status(400).json({ error: 'Field "price" must be a number' });
+            }
+
+            const numericRating = toNumberOrNull(rating);
+            if (numericRating === "NaN") {
+                return res.status(400).json({ error: 'Field "rating" must be a number' });
+            }
+
+            const id = toIntOrNull(rawId);
+
+            if (id !== null) {
+                const item = await wishlistRepo.findOne({ where: { id } });
                 if (item) {
                     item.title = title.trim();
-                    if (image !== undefined) item.image = image;
-                    if (price !== undefined) item.price = price;
-                    if (numericRating !== null) item.rating = numericRating;
+                    item.slug = slug.trim();
 
-                    item = await wishlistRepo.save(item);
-                    return res.status(200).json({ status: "updated", item });
+                    if (image !== undefined) item.image = image ?? null;
+
+                    if (price !== undefined) {
+                        item.price = numericPrice as number | null;
+                    }
+
+                    if (rating !== undefined) {
+                        item.rating = (numericRating as number | null) ?? null;
+                    }
+
+                    const saved = await wishlistRepo.save(item);
+                    return res.status(200).json({ status: "updated", item: saved });
                 }
             }
 
-            // если нет id или не нашли → создаём новый
             const draft: DeepPartial<Wishlist> = {
-                id: typeof id === "number" ? id : undefined,
                 title: title.trim(),
+                slug: slug.trim(),
                 image: image ?? null,
-                price: price ?? null,
-                rating: numericRating,
+                price: (numericPrice as number | null) ?? null,
+                rating: (numericRating as number | null) ?? null,
             };
 
             const created = await wishlistRepo.save(wishlistRepo.create(draft));
             return res.status(201).json({ status: "created", item: created });
-        } catch (e) {
-            console.error(e);
+        } catch (e: any) {
+            console.error("Wishlist error:", {
+                name: e?.name,
+                code: e?.code,
+                message: e?.message,
+                detail: e?.detail,
+                stack: e?.stack,
+            });
+
+            if (e?.code === "SQLITE_CONSTRAINT") {
+                const msg = String(e?.message || "");
+                if (/UNIQUE constraint failed/i.test(msg)) {
+                    return res.status(409).json({ error: "Unique constraint violated (likely slug or title already exists)" });
+                }
+                if (/NOT NULL constraint failed/i.test(msg)) {
+                    return res.status(400).json({ error: "NOT NULL constraint failed (check required fields)" });
+                }
+                return res.status(409).json({ error: "Constraint violation" });
+            }
+
+            if (e?.code === "SQLITE_MISMATCH") {
+                return res.status(400).json({ error: "Datatype mismatch (check numeric fields)" });
+            }
+
             return res.status(500).json({ error: "Server error" });
         }
     });
+
+    app.delete("/wishlist", async (req, res) => {
+        try {
+            const { slug } = req.body || {};
+
+            if (!slug || typeof slug !== "string" || !slug.trim()) {
+                return res.status(400).json({ error: 'Field "slug" is required' });
+            }
+
+            const item = await wishlistRepo.findOne({ where: { slug: slug.trim() } });
+
+            if (!item) {
+                return res.status(404).json({ error: "Item not found" });
+            }
+
+            await wishlistRepo.remove(item);
+
+            return res.status(200).json({ status: "deleted", slug: slug.trim() });
+        } catch (e: any) {
+            console.error("Wishlist delete error:", {
+                name: e?.name,
+                code: e?.code,
+                message: e?.message,
+                detail: e?.detail,
+                stack: e?.stack,
+            });
+
+            return res.status(500).json({ error: "Server error" });
+        }
+    });
+
 
     app.get("/wishlist", async (_req, res) => {
         try {
@@ -181,8 +258,6 @@ AppDataSource.initialize().then(async () => {
             res.status(500).json({ error: "Server error" });
         }
     });
-
-
 
     app.listen(PORT, () => {
         console.log(`🚀 Server running on http://localhost:${PORT}`);

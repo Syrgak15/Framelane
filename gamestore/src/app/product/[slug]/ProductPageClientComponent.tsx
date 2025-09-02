@@ -4,15 +4,13 @@ import React from "react";
 import "./slug.css"
 import BreadCrumbs from "../../../lib-components/BreadCrumbs";
 import Button from '@mui/material/Button';
-import FavoriteIcon from '@mui/icons-material/Favorite';
 import highlights from "../../../data/product-page-data.json";
 import CheckIcon from '@mui/icons-material/Check';
 import AccordionGridProduct from "../../../lib-components/AccordionGridProduct";
 import AccordionGridDelivery from "../../../lib-components/AccordionGridDelivery";
-import {useAppDispatch} from "../../../store/hooks";
-import {addProductToWishlist} from "../../../features/slices/productPageReducer";
+import SnackBarWishlist from "../../../lib-components/SnackBarWishlist";
 
-type Product = {
+export type Product = {
     id: number;
     title: string;
     slug: string;
@@ -22,13 +20,8 @@ type Product = {
 
 
 export default function ProductPage({ productInfo } : {productInfo: Product}) {
-    const dispatch = useAppDispatch();
 
     const data = productInfo;
-
-    const addToWishlist = async () => {
-        await dispatch(addProductToWishlist({data}))
-    }
 
     return <div className="product">
         <div className="product__wrapper">
@@ -48,7 +41,6 @@ export default function ProductPage({ productInfo } : {productInfo: Product}) {
                             <span>{productInfo.price}</span>
                             <p>Including prescription lenses</p>
                         </div>
-
                         <div className="product__btns">
                             <Button
                                 sx={{
@@ -59,16 +51,7 @@ export default function ProductPage({ productInfo } : {productInfo: Product}) {
                                     marginTop: "35px"
                                 }}
                                 variant="contained">Buy it now</Button>
-                            <Button
-                                onClick={addToWishlist}
-                                sx={{
-                                    border: "1px solid 3d6da3",
-                                    borderRadius: "40px",
-                                    width: '65px',
-                                    height: '45px',
-                                    marginTop: "35px"
-                                }}
-                                variant="outlined"><FavoriteIcon/></Button>
+                            <SnackBarWishlist data={data}/>
                         </div>
 
                         <ul className="product__highlight-list">

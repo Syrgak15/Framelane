@@ -7,6 +7,9 @@
     --fr-text-transform: uppercase;
     --fr-font-family: Comfortaa;
 }
+::-webkit-scrollbar {
+    display: none;
+}
 *{
     box-sizing: border-box;
     margin: 0;
