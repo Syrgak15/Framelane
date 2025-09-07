@@ -1,11 +1,21 @@
-import React from 'react';
+import WishlistPageClientComponent from "./WishlistPageClientComponent";
 
-const Page:React.FC = () => {
-    return (
-        <div>
-            its wishlist page
-        </div>
-    );
-};
+async function getWishlistData() {
+    const res = await fetch(`http://localhost:5000/wishlist`, {
+        cache: "no-store",
+    });
 
-export default Page;
+    if (!res.ok) {
+        throw new Error("Product not found");
+    }
+
+    const data = await res.json();
+    return data;
+}
+
+export default async function WishlistPageServerComponent () {
+
+    const wishlistPageData = await getWishlistData();
+
+    return <WishlistPageClientComponent wishlistPageData={wishlistPageData} />
+}

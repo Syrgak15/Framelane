@@ -9,6 +9,8 @@ import StarRateRoundedIcon from '@mui/icons-material/StarRateRounded';
 import '@/floating-widgets/reviews/reviews.css';
 import Link from 'next/link';
 import Box from '@mui/material/Box';
+import {usePathname} from "next/navigation";
+import {footerPageConfig} from "../../config/pages.config";
 
 export type Reviews = {
     id: number;
@@ -42,6 +44,8 @@ export default function Reviews({reviews} : {reviews: Reviews[]}) {
     const [open, setOpen] = React.useState<boolean>(false);
     const [limitedReviews, setLimitedReviews] = React.useState<number>(7);
     const dateSortOrder = "desc";
+    const currentPathname = usePathname();
+    const onReviewsPage = currentPathname === `/pages/${footerPageConfig.REVIEWS}`;
 
     const toggleDrawer = (newOpen: boolean) => () => {
         setOpen(newOpen);
@@ -95,9 +99,9 @@ export default function Reviews({reviews} : {reviews: Reviews[]}) {
                         <span className="reviews-drawer__total">{reviews.length} reviews</span>
                     </div>
 
-                    <div className="reviews-drawer__btn">
-                        <Button sx={{width: 150, fontFamily: "Comfortaa"}} variant="outlined">Write a review</Button>
-                    </div>
+                    {/*<div className="reviews-drawer__btn">*/}
+                    {/*    <Button sx={{width: 150, fontFamily: "Comfortaa"}} variant="outlined">Write a review</Button>*/}
+                    {/*</div>*/}
                 </div>
             </div>
             <Divider/>
@@ -159,7 +163,7 @@ export default function Reviews({reviews} : {reviews: Reviews[]}) {
     );
 
     return (
-        <div className="reviews">
+        <div className={`reviews ${onReviewsPage ? "hidden" : ""}`}>
             {!open && (
                 <Button
                     className="reviews-drawer__btn"

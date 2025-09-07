@@ -6,6 +6,7 @@ export type Product = {
     slug: string;
     image: string;
     price: string;
+    id: number;
 };
 
 interface MainState {

@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import "./collections.css";
 import Accordion from "../../lib-components/Accordion";
 import MediaCollectionCard from "../../lib-components/MediaCollectionCard";
@@ -8,16 +8,20 @@ import Link from "next/link";
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined';
 import Button from "@mui/material/Button";
-import {addProductToWishlist, deleteProductFromWishlist} from "../../features/slices/productPageReducer";
+import {
+    addProductToWishlist,
+    deleteProductFromWishlist
+} from "../../features/slices/productPageReducer";
 import {useAppDispatch} from "../../store/hooks";
 
-type CollectionProduct = {
+export type CollectionProduct = {
         id: number;
         title: string;
         slug?: string;
         image: string;
         price: string;
         rating?: number | null;
+        some?: (callback: (value: CollectionProduct) => boolean) => boolean;
         product?: {
             description: string;
             features: string[];
@@ -30,17 +34,55 @@ type CollectionProduct = {
             returns: string;
             international: string;
         };
-    };
+};
+interface WishlistItem {
+    id: number;
+    title: string;
+    slug: string;
+    image: string | null;
+    price: number | null;
+    rating: number | null;
+}
 
 
-type SortOrder = "asc" | "desc";
+type SortOrder = "asc" | "desc" | null;
 
-export default function CollectionsPage ({posts}: {posts: CollectionProduct}) {
+export default function CollectionsPage({
+                                            posts,
+                                            initialItems,
+                                        }: {
+    posts: CollectionProduct[];
+    initialItems: WishlistItem[];
+}) {
     const [priceSortOrder, setPriceSortOrder] = useState<SortOrder>("asc");
-    const [alphabetSortOrder, setAlphabetSortOrder] = useState<SortOrder>("desc");
     const [isClicked, setIsClicked] = React.useState(false);
-    const [wishlistItems, setWishlistItems] = React.useState([]);
+    const [alphabetSortOrder, setAlphabetSortOrder] = useState<SortOrder>("desc");
+    const [wishlistItems, setWishlistItems] = React.useState<WishlistItem[]>(initialItems);
     const dispatch = useAppDispatch();
+
+    useEffect(() => {
+
+        const ws = new WebSocket("ws://localhost:5000");
+
+        ws.onmessage = (e: MessageEvent) => {
+            const message = JSON.parse(e.data as string);
+
+            if (message.type === "wishlist_updated") {
+                setWishlistItems((prev) => [...prev, message.item]);
+            }
+            if (message.type === "wishlist_deleted") {
+                setWishlistItems((prev) => prev.filter((p) => p.slug !== message.slug));
+            }
+            if (message.type === "wishlist_cleared") {
+                setWishlistItems([]);
+            }
+        };
+
+        return () => {
+            ws.close();
+        }
+  }, []);
+
     const getPrice = (price: string) => Number(price.replace(/^\$/, ""));
 
     const sortedPosts = [...posts].sort((a, b) => {
@@ -67,23 +109,15 @@ export default function CollectionsPage ({posts}: {posts: CollectionProduct}) {
         setPriceSortOrder(null);
     };
 
-    const addToWishlist = async (data) => {
-        dispatch(addProductToWishlist({ data }));
-        setIsClicked(true);
-    };
-
-    const deleteFromWishlist = async (data) => {
-        dispatch(deleteProductFromWishlist({ data }));
-        setIsClicked(false);
-    };
-
     const handleClick = (data) => {
-        if (!wishlistItems.includes(data.id)) {
-            setWishlistItems([...wishlistItems, data.id]);
-            addToWishlist(data);
+        if (!wishlistItems.some((item) => item.slug === data.slug)) {
+            setWishlistItems((prev) => [...prev, data]);
+            dispatch(addProductToWishlist({ data }));
+            setIsClicked(true);
         } else {
-            setWishlistItems((prev) => prev.filter((currentId) => currentId !== data.id));
-            deleteFromWishlist(data);
+            setWishlistItems((prev) => prev.filter((item) => item.slug !== data.slug));
+            dispatch(deleteProductFromWishlist({ data }));
+            setIsClicked(false);
         }
     };
 
@@ -107,7 +141,7 @@ export default function CollectionsPage ({posts}: {posts: CollectionProduct}) {
 
                 <div className="collections-grid">
                     {sortedPosts.map((post) => (
-                        <Link className="collections__grid-link" key={post.id} href={`/product/${post.slug}`} target="_blank">
+                        <Link className="collections__grid-link" key={post.id} href={`/product/${post.slug}`}>
                             <Button
                                 className={`${isClicked}`}
                                 onClick={(e) => {
@@ -128,7 +162,7 @@ export default function CollectionsPage ({posts}: {posts: CollectionProduct}) {
                                     },
                                 }}
                             >
-                                {!wishlistItems.includes(post.id) ? (
+                                {!wishlistItems.some(item => item.slug === post.slug) ? (
                                     <FavoriteBorderOutlinedIcon
                                         sx={{
                                             fill: 'red',

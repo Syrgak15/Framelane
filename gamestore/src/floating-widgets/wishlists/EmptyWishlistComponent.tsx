@@ -17,7 +17,7 @@ export default function EmptyWishlist () {
                     <p>You can add items to wishlist by clicking</p>
                 </div>
                 <div className="empty__wishlist-link">
-                    <Link href={`/${headerPageConfig.COLLECTIONS}`} target="_blank">
+                    <Link href={`/${headerPageConfig.COLLECTIONS}`}>
                         Browse products
                     </Link>
                 </div>

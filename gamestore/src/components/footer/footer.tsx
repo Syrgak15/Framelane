@@ -14,7 +14,7 @@ const Footer:React.FC = () => {
                     <ul className="footer-resources__list">
                         <h2 className="footer-resources__list-title">RESOURCES</h2>
                         {footerPageEntries.map(([key, value]) => (
-                            <Link className="footer-resources__item" key={key} href={`pages/${value}`}>
+                            <Link className="footer-resources__item" key={key} href={`/pages/${value}`}>
                                 {value}
                             </Link>
                         ))}

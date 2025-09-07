@@ -1,28 +1,24 @@
 import CollectionsClientComponent from "./CollectionsClientComponent";
 
-type CollectionProduct = {
-        id: number;
-        title: string;
-        slug: string;
-        image: string;
-        price: string;
-        product: {
-            description: string;
-            features: string[];
-            materials: string;
-            size: string;
-        };
-        delivery: {
-            shipping_options: string[];
-            cost: string;
-            returns: string;
-            international: string;
-        };
-}
-
-async function getCollectionsPageData ():Promise<CollectionProduct> {
+async function getCollectionsPageData () {
     try {
         const req = await fetch('http://localhost:5000/products?limit=30', {cache: "no-store"});
+
+        if(!req.ok) {
+            throw new Error();
+        }
+
+        const data = await req.json()
+
+        return data;
+    }catch(e) {
+        console.error(e);
+    }
+}
+
+async function getFavoriteProducts (){
+    try {
+        const req = await fetch('http://localhost:5000/wishlist', {cache: "no-store"});
 
         if(!req.ok) {
             throw new Error();
@@ -39,6 +35,7 @@ async function getCollectionsPageData ():Promise<CollectionProduct> {
 export default async function CollectionsServerComponent () {
 
     const getCollectionsData = await getCollectionsPageData();
+    const getWishlistItems = await getFavoriteProducts();
 
-    return <CollectionsClientComponent posts={getCollectionsData} />
+    return <CollectionsClientComponent initialItems={getWishlistItems} posts={getCollectionsData} />
 }

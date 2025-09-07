@@ -71,7 +71,7 @@
     display: flex;
     gap: 5px;
 }
-.wishlists__list.hidden {
+.hidden {
     display: none;
     margin: 0;
     padding: 0;

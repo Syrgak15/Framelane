@@ -29,6 +29,10 @@ export type WishlistProduct = {
     rating?: number | null;
 };
 
+interface DeleteFromWishlistArgs {
+    data: { id: number }
+}
+
 export type addToWishlistArgs = {
     data: {
         id?: number;
@@ -86,7 +90,7 @@ export const postProductReview = createAsyncThunk<ProductReview, PostProductRevi
 
 export const addProductToWishlist = createAsyncThunk<
     WishlistProduct,
-    addToWishlistArgs,
+    DeleteFromWishlistArgs,
     { rejectValue: ApiError }
 >(
     'product/addProductToWishlist',
@@ -118,7 +122,7 @@ export const deleteProductFromWishlist = createAsyncThunk<
     addToWishlistArgs
 >(
     'product/deleteProductFromWishlist',
-    async ({ data }) => {
+    async ({data}, {rejectWithValue}) => {
         try {
             const res = await fetch(`http://localhost:5000/wishlist`, {
                 method: 'DELETE',
@@ -129,15 +133,51 @@ export const deleteProductFromWishlist = createAsyncThunk<
             const payload = await res.json();
 
             if (!res.ok) {
-                return new Error();
+                return rejectWithValue('Failed to delete product from wishlist')
             }
-            return payload;
+
+            const { id, title, slug, image, price } = payload
+
+            return {
+                id,
+                title,
+                slug,
+                image,
+                price,
+            };
+
         } catch(e) {
             console.error(e);
         }
     }
 );
 
+export const deleteAllProductFromWishlist = createAsyncThunk<
+    WishlistProduct,
+    addToWishlistArgs
+>(
+    'product/deleteAllProductFromWishlist',
+    async ({data}, {rejectWithValue}) => {
+        try {
+            const res = await fetch(`http://localhost:5000/wishlist/all`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data),
+            });
+
+            const payload = await res.json();
+
+            if (!res.ok) {
+                return rejectWithValue('Failed to delete wishlist')
+            }
+
+            return payload;
+
+        } catch(e) {
+            console.error(e);
+        }
+    }
+);
 
 const productReducer = createSlice({
     name: 'products',
@@ -155,8 +195,12 @@ const productReducer = createSlice({
                 state.wishlist.push(action.payload);
             })
             .addCase(deleteProductFromWishlist.fulfilled, (state, action) => {
-                state.wishlist.push(action.payload);
+                state.wishlist = state.wishlist.filter((wishlist) => wishlist.id !== action.payload.id);
             })
+            .addCase(deleteAllProductFromWishlist.fulfilled, (state) => {
+                state.wishlist = [];
+            })
+
     },
 });
 

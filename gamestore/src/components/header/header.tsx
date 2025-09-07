@@ -46,7 +46,9 @@ const Header: React.FC = () => {
 
                 {pageEntries.map(([key, value]) => (
                     <div key={key} className="header-nav">
-                        <Link className={`header-link header-link__${value}`} href={`${value}`}>
+                        <Link className={`header-link header-link__${value}`} href={{
+                            pathname: `/${value}`
+                        }}>
                             {value}
                         </Link>
                     </div>

@@ -56,7 +56,7 @@ export default function Slider({slides} : {slides: SliderProps[]}) {
                                     maxHeight: '350px',
                                     overflow: 'hidden'
                                 }}>
-                                <Link href={`/${productConfig.PRODUCT}/${slide.product.slug}`} key={index} target="_blank">
+                                <Link href={`/${productConfig.PRODUCT}/${slide.product.slug}`} key={index}>
                                     <CardMedia
                                         className="slide"
                                         component="img"

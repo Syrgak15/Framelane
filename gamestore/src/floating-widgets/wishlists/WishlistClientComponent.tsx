@@ -13,26 +13,56 @@ import Link from 'next/link';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import sortArray from "../../utils/SortArray";
 import WishlistCard from '../../lib-components/WishlistCard';
-import {useState} from "react";
+import {useEffect, useState} from "react";
+import {deleteAllProductFromWishlist} from "../../features/slices/productPageReducer";
+import {useAppDispatch} from "../../store/hooks";
+import {usePathname} from "next/navigation";
 
 type Anchor = 'top' | 'left' | 'bottom' | 'right';
 
-type WishlistProps = {
-    id: number,
-    title: string,
-    slug: string,
-    image: string,
-    price: string,
-    rating: string;
+
+export interface WishlistItem {
+    id: number;
+    title: string;
+    slug: string;
+    image: string | null;
+    price: number | null;
+    rating: number | null;
 }
 
-export default function Wishlists({wishlistItems} : {wishlistItems : WishlistProps[]}) {
+export default function Wishlists({initialItems} : {initialItems : WishlistItem[]}) {
     const [state, setState] = React.useState({
         right: false
     });
+    const dispatch = useAppDispatch();
     const [expanded, setExpanded] = useState(false);
-
+    const [wishlistItems, setWishlistItems] = React.useState<WishlistItem[]>(initialItems);
     const sortedWishlistData = sortArray(wishlistItems, "desc");
+    const currentPathname = usePathname();
+
+    const onWishlistPage = currentPathname === `/pages/${footerPageConfig.WISHLISTS}`;
+
+    useEffect(() => {
+
+        const ws = new WebSocket("ws://localhost:5000");
+
+        ws.onmessage = (e: MessageEvent) => {
+            const message = JSON.parse(e.data as string);
+
+            if (message.type === "wishlist_created") {
+                setWishlistItems((prev) => [...prev, message.item]);}
+            if (message.type === "wishlist_cleared") {
+                setWishlistItems([]);
+            }
+        };
+
+        return () => ws.close();
+    }, []);
+
+    const deleteAllFromWishlist = async (data) => {
+        dispatch(deleteAllProductFromWishlist({ data }));
+        setWishlistItems([]);
+    };
 
     const toggleDrawer =
         (anchor: Anchor, open: boolean) =>
@@ -67,26 +97,26 @@ export default function Wishlists({wishlistItems} : {wishlistItems : WishlistPro
                             </Link>
                         </div>
                     </div>
-                    <div className="wishlist__root-add-btn">
-                        <Button
-                            variant="contained"
-                            sx={{
-                                width: '100%',
-                                boxShadow: 'unset',
-                                backgroundColor: '#FFFFFF',
-                                color: '#000',
-                                border: '1px solid black',
-                                borderRadius: '30px',
-                                ":hover": {
-                                    boxShadow: 'unset',
-                                    backgroundColor: '#FFFFFF',
-                                },
+                    {/*<div className="wishlist__root-add-btn">*/}
+                    {/*    <Button*/}
+                    {/*        variant="contained"*/}
+                    {/*        sx={{*/}
+                    {/*            width: '100%',*/}
+                    {/*            boxShadow: 'unset',*/}
+                    {/*            backgroundColor: '#FFFFFF',*/}
+                    {/*            color: '#000',*/}
+                    {/*            border: '1px solid black',*/}
+                    {/*            borderRadius: '30px',*/}
+                    {/*            ":hover": {*/}
+                    {/*                boxShadow: 'unset',*/}
+                    {/*                backgroundColor: '#FFFFFF',*/}
+                    {/*            },*/}
 
-                            }}
-                        >
-                            + Add a new list
-                        </Button>
-                    </div>
+                    {/*        }}*/}
+                    {/*    >*/}
+                    {/*        + Add a new list*/}
+                    {/*    </Button>*/}
+                    {/*</div>*/}
                     <div className="wishlist__root-list-header">
                         <div
                             onClick={() => setExpanded(!expanded)}
@@ -104,32 +134,36 @@ export default function Wishlists({wishlistItems} : {wishlistItems : WishlistPro
                         </div>
                         <div className="wishlist__root-list-divider"></div>
                         <div className="wishlist__root-list-options">
-                            <button className="wishlist__root-list-options-btn">
+                            <button
+                                onClick={() => {deleteAllFromWishlist(wishlistItems)}}
+                                className="wishlist__root-list-options-btn">
                                 <p className="wishlist__root-list-options-text">
-                                    Options
+                                    Delete
                                 </p>
                             </button>
                         </div>
                     </div>
                 </div>
-                {sortedWishlistData ? (
-                    <ul className={`wishlists__list ${expanded ? '' : 'hidden'}`}>
+                {sortedWishlistData.length ? (
+                    <ul className={`wishlists__list ${expanded ? 'hidden' : ''}`}>
                         {sortedWishlistData.map((item, id) => (
-                                <Link href={`/${productConfig.PRODUCT}/${item.slug}`} key={id} target="_blank">
+                                <Link href={`/${productConfig.PRODUCT}/${item.slug}`} key={id}>
                                     <WishlistCard key={id} image={item.image} title={item.title} price={item.price}/>
                                 </Link>
                             )
                         )}
                     </ul>
                 ) : (
-                    <EmptyWishlistComponent />
-                    )}
+                    <ul className={`${expanded ? 'hidden' : ''}`}>
+                        <EmptyWishlistComponent />
+                    </ul>
+                )}
             </div>
         </Box>
     );
 
     return (
-        <div className='wishlists'>
+        <div className={`wishlists ${onWishlistPage ? "hidden" : ""}`}>
             {(['right'] as const).map((anchor) => (
                 <React.Fragment key={anchor}>
                     <Button

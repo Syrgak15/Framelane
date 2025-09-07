@@ -41,14 +41,14 @@ const MainPageClient: React.FC<Props> = ({glassesData}) => {
         <div className="products-wrapper">
             <div className="products-heading">
                 <span className="products-heading__title">Products</span>
-                <Link href={`/${headerPageConfig.COLLECTIONS}`} target="_blank">
+                <Link href={`/${headerPageConfig.COLLECTIONS}`}>
                     <button className="products-heading__btn">SHOP ALL</button>
                 </Link>
             </div>
             {filteredGlasses && (
                 <ul className="products-list">
                     {filteredGlasses.map((glass, index) => (
-                        <Link href={`/${productConfig.PRODUCT}/${glass.slug}`} key={index} target="_blank">
+                        <Link href={`/${productConfig.PRODUCT}/${glass.slug}`} key={index}>
                             <MediaCard key={index} image={glass.image} title={glass.title} price={glass.price}/>
                         </Link>
                     ))}

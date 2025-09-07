@@ -17,5 +17,5 @@ export default async function WishlistServerComponent() {
 
     const wishlistItem = await getWishlistData();
 
-    return <WishlistClientComponent wishlistItems={wishlistItem} />;
+    return <WishlistClientComponent initialItems={wishlistItem} />;
 }

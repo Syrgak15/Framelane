@@ -15,14 +15,11 @@ export default function MediaCard({ image, title, price }: MediaCardProps) {
     return (
         <Card
             sx={{
-                borderRadius: 3,
                 maxWidth: 250,
                 maxHeight: 350,
                 cursor: 'pointer',
-                boxShadow: '0px 4px 12px rgba(0,0,0,0.15)',
                 transition: 'all 0.3s ease',
                 overflow: 'hidden',
-                backgroundColor: '#fff',
             }}
         >
             <CardMedia
@@ -30,7 +27,6 @@ export default function MediaCard({ image, title, price }: MediaCardProps) {
                     height: 210,
                     width: '100%',
                     objectFit: 'cover',
-                    borderBottom: '1px solid #eee',
                 }}
                 image={image}
             />

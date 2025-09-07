@@ -2,31 +2,49 @@ import * as React from 'react';
 import Button from '@mui/material/Button';
 import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar';
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import {Product} from "../features/slices/mainPageReducer";
 import { addProductToWishlist, deleteProductFromWishlist } from '../features/slices/productPageReducer';
 import {useAppDispatch} from "../store/hooks";
+import {useEffect} from "react";
+import {WishlistItem} from "../floating-widgets/wishlists/WishlistClientComponent";
 
-export default function AutohideSnackbar({data}: {data: Product}) {
+export default function AutohideSnackbar({data}: {data: WishlistItem}) {
     const [open, setOpen] = React.useState(false);
     const [isClicked, setIsClicked] = React.useState(false);
+    const [wishlistItems, setWishlistItems] = React.useState<WishlistItem>(data);
     const dispatch = useAppDispatch();
+
+    console.log(wishlistItems);
 
     const addToWishlist = async () => {
         dispatch(addProductToWishlist({ data }));
         setIsClicked(true);
     };
 
-    console.log(data)
-
     const deleteFromWishlist = async () => {
         dispatch(deleteProductFromWishlist({ data }));
         setIsClicked(false);
     };
 
+    useEffect(() => {
+        const ws = new WebSocket("ws://localhost:5000");
+
+        ws.onmessage = (e: MessageEvent) => {
+            const message = JSON.parse(e.data as string);
+
+            if (message.type === "wishlist_created") {
+                setWishlistItems(message.item);
+            }
+            if (message.type === "wishlist_cleared") {
+                setWishlistItems(null);
+            }
+        };
+
+        return () => ws.close();
+    }, []);
+
     const handleClick = () => {
         setOpen(true);
-
-        if (isClicked) {
+        if (!Object.keys(wishlistItems).length) {
             deleteFromWishlist();
         } else {
             addToWishlist();
@@ -49,15 +67,19 @@ export default function AutohideSnackbar({data}: {data: Product}) {
         <div>
             <Button
                 className={`${isClicked}`}
+                disableRipple
                 sx={{
                 border: "1px solid 3d6da3",
                 borderRadius: "40px",
                 width: '35px',
                 height: '45px',
                 marginTop: "35px",
-                ...(isClicked && {
+                ...(Object.keys(wishlistItems).length ? {
                         backgroundColor: "#3d6da3",
                         color: "#fff",
+                } : {
+                    backgroundColor: "unset",
+                    color: "#fff",
                 })
             }}
                 onClick={handleClick}
@@ -67,7 +89,7 @@ export default function AutohideSnackbar({data}: {data: Product}) {
                 open={open}
                 autoHideDuration={3000}
                 onClose={handleClose}
-                message={`${isClicked ? `You've added ${data.title} to your Wishlist🖤` 
+                message={`${Object.keys(wishlistItems).length? `You've added ${data.title} to your Wishlist🖤` 
                     : 
                     `You've removed ${data.title} from your Wishlist`}`
                 }
