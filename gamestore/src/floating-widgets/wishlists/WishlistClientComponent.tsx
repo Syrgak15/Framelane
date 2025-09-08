@@ -26,7 +26,7 @@ export interface WishlistItem {
     title: string;
     slug: string;
     image: string | null;
-    price: number | null;
+    price: number | string | null;
     rating: number | null;
 }
 
@@ -39,7 +39,6 @@ export default function Wishlists({initialItems} : {initialItems : WishlistItem[
     const [wishlistItems, setWishlistItems] = React.useState<WishlistItem[]>(initialItems);
     const sortedWishlistData = sortArray(wishlistItems, "desc");
     const currentPathname = usePathname();
-
     const onWishlistPage = currentPathname === `/pages/${footerPageConfig.WISHLISTS}`;
 
     useEffect(() => {

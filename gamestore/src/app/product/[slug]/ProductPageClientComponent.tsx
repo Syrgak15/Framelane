@@ -9,6 +9,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import AccordionGridProduct from "../../../lib-components/AccordionGridProduct";
 import AccordionGridDelivery from "../../../lib-components/AccordionGridDelivery";
 import SnackBarWishlist from "../../../lib-components/SnackBarWishlist";
+import {WishlistItem} from "../../../floating-widgets/wishlists/WishlistClientComponent";
 
 export type Product = {
     id: number;
@@ -16,10 +17,11 @@ export type Product = {
     slug: string;
     image: string;
     price: string;
+    rating? : string | null;
 };
 
 
-export default function ProductPage({ productInfo } : {productInfo: Product}) {
+export default function ProductPage({ productInfo, wishlistItems } : {productInfo: Product, wishlistItems: WishlistItem[]}) {
 
     const data = productInfo;
 
@@ -51,7 +53,7 @@ export default function ProductPage({ productInfo } : {productInfo: Product}) {
                                     marginTop: "35px"
                                 }}
                                 variant="contained">Buy it now</Button>
-                            <SnackBarWishlist data={data}/>
+                            <SnackBarWishlist data={data} wishlistItems={wishlistItems}/>
                         </div>
 
                         <ul className="product__highlight-list">

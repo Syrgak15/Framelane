@@ -6,14 +6,14 @@ type ProductInfo = {
     features: string[];
     materials: string;
     size: string;
-};
+}
 
 type DeliveryInfo = {
     shipping_options: string[];
     cost: string;
     returns: string;
     international: string;
-};
+}
 
 @Entity()
 export class Product {

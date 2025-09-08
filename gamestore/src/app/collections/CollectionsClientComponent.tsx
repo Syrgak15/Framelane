@@ -12,7 +12,8 @@ import {
     addProductToWishlist,
     deleteProductFromWishlist
 } from "../../features/slices/productPageReducer";
-import {useAppDispatch} from "../../store/hooks";
+import {useAppDispatch, useAppSelector} from "../../store/hooks";
+import {RootState} from "../../store";
 
 export type CollectionProduct = {
         id: number;

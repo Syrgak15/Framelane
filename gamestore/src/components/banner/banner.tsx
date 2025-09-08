@@ -6,12 +6,15 @@ import Image from 'next/image'
 import 'swiper/css';
 import 'swiper/css/effect-fade';
 import '@/components/banner/banner.css';
+import {useSession} from "next-auth/react";
 
 type Slides = {
     image: string;
 }
 
 const Banner: React.FC = () => {
+
+    const session = useSession();
 
     const slides : Slides[] = [
         {

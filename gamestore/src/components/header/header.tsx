@@ -9,10 +9,12 @@ import faveIcon from '../../../public/icons/faveicon.svg';
 import shoppingIcon from '../../../public/icons/shopping.svg';
 import { headerPageConfig } from '../../config/pages.config';
 import { footerPageConfig } from '../../config/pages.config';
+import {useSession} from "next-auth/react";
 
 const Header: React.FC = () => {
     const [hidden, setHidden] = useState(false);
     const lastScrollY = useRef(0);
+    const session = useSession();
 
     useEffect(() => {
         const handleScroll = () => {
@@ -55,7 +57,7 @@ const Header: React.FC = () => {
                 ))}
 
                 <div className="header-nav nav-icons">
-                    <Link className="header-link" href="#">
+                    <Link className="header-link" href="/profile">
                         <Image className="header-nav__icon" src={customerIcon} alt="Customer" />
                     </Link>
                     <Link className="header-link" href={`/pages/${footerPageConfig.WISHLISTS}`}>

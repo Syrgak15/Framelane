@@ -39,7 +39,7 @@ export type addToWishlistArgs = {
         title: string;
         image?: string | null;
         price?: string | null;
-        rating?: number | null;
+        rating?: number | string | null;
     };
 };
 
@@ -90,7 +90,7 @@ export const postProductReview = createAsyncThunk<ProductReview, PostProductRevi
 
 export const addProductToWishlist = createAsyncThunk<
     WishlistProduct,
-    DeleteFromWishlistArgs,
+    addToWishlistArgs,
     { rejectValue: ApiError }
 >(
     'product/addProductToWishlist',
@@ -119,7 +119,7 @@ export const addProductToWishlist = createAsyncThunk<
 
 export const deleteProductFromWishlist = createAsyncThunk<
     WishlistProduct,
-    addToWishlistArgs
+    DeleteFromWishlistArgs
 >(
     'product/deleteProductFromWishlist',
     async ({data}, {rejectWithValue}) => {

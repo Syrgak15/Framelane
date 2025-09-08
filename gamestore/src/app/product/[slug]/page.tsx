@@ -46,15 +46,29 @@ async function getReviews(slug: string): Promise<Review[]> {
     return res.json();
 }
 
+async function getWishlistData() {
+    const res = await fetch(`http://localhost:5000/wishlist`, {
+        cache: "no-store",
+    });
+
+    if (!res.ok) {
+        throw new Error("Product not found");
+    }
+
+    const data = await res.json();
+    return data;
+}
+
 export default async function ProductPage({ params }) {
 
     const {slug} = await params;
 
     const productInfoData = await getProduct(slug);
     const reviewsData = await getReviews(slug);
+    const wishlistItems = await getWishlistData()
 
     return <>
-        <ProductPageClientComponent productInfo={productInfoData}/>
+        <ProductPageClientComponent productInfo={productInfoData} wishlistItems={wishlistItems}/>
         <ReviewsWidget reviews={reviewsData} slug={slug}/>
     </>
 }

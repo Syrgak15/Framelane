@@ -7,7 +7,7 @@ import Wishlists from "../floating-widgets/wishlists/wishlists";
 import { ReduxProvider } from '../app/provider/provider';
 import Footer from "../components/footer/footer";
 import Newsletter from "../components/newsletter/newsletter";
-
+import AuthProviders from "../provider/Providers";
 
 export const comfortaa = Comfortaa({
   subsets: ['latin', 'cyrillic'],
@@ -28,14 +28,16 @@ export default function RootLayout({
     <body
         className={comfortaa.className}
     >
-    <ReduxProvider>
-      <Header/>
-      {children}
-      <Reviews/>
-      <Wishlists/>
-      <Newsletter/>
-      <Footer/>
-    </ReduxProvider>
+    <AuthProviders>
+        <ReduxProvider>
+          <Header/>
+          {children}
+          <Reviews/>
+          <Wishlists/>
+          <Newsletter/>
+          <Footer/>
+        </ReduxProvider>
+    </AuthProviders>
     </body>
     </html>
   );

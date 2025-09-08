@@ -7,24 +7,25 @@ import { DataSource, DeepPartial } from "typeorm";
 import { Product } from "./entities/Product";
 import { Review } from "./entities/Review";
 import { Wishlist } from "./entities/Wishlist";
+import {Users} from "./entities/Users";
+import {compare, hash} from "bcryptjs";
+
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-const AppDataSource = new DataSource({
+export const AppDataSource = new DataSource({
     type: "sqlite",
     database: "db.sqlite",
     synchronize: true,
     logging: true,
-    entities: [Product, Review, Wishlist],
+    entities: [Product, Review, Wishlist, Users],
 });
 
-// общий сервер (Express + WebSocket)
 const server = createServer(app);
 const wss = new WebSocketServer({ server });
 
-// рассылка всем клиентам
 function broadcast(data: any) {
     const msg = JSON.stringify(data);
     wss.clients.forEach((client) => {
@@ -318,7 +319,50 @@ AppDataSource.initialize()
             }
         });
 
-        // слушаем сервер (Express + WS)
+        app.post("/register", async (req, res) => {
+            try {
+                const { email, password } = req.body;
+                if (!email || !password) return res.status(400).json({ error: "Email and password required" });
+
+                const userRepo = AppDataSource.getRepository(Users);
+                const exists = await userRepo.findOne({ where: { email } });
+                if (exists) return res.status(409).json({ error: "User already exists" });
+
+                const hashedPassword = await hash(password, 10);
+                const newUser = userRepo.create({ email, password: hashedPassword });
+                await userRepo.save(newUser);
+
+                res.status(201).json({ message: "User created" });
+            } catch (e) {
+                console.error(e);
+                res.status(500).json({ error: "Server error" });
+            }
+        });
+        app.post("/login", async (req, res) => {
+            try {
+                const { email, password } = req.body;
+                if (!email || !password) {
+                    return res.status(400).json({ error: "Email and password required" });
+                }
+
+                const userRepo = AppDataSource.getRepository(Users);
+                const user = await userRepo.findOne({ where: { email } });
+
+                if (!user) return res.status(401).json({ error: "Invalid credentials" });
+
+                const isPasswordValid = await compare(password, user.password);
+                if (!isPasswordValid) {
+                    return res.status(401).json({ error: "Invalid credentials" });
+                }
+
+                // Возвращаем данные пользователя (но пароль не отдаём!)
+                res.json({ id: user.id.toString(), email: user.email });
+            } catch (e) {
+                console.error(e);
+                res.status(500).json({ error: "Server error" });
+            }
+        });
+
         server.listen(PORT, () => {
             console.log(`🚀 Server running on http://localhost:${PORT}`);
         });
