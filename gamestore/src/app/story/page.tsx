@@ -5,8 +5,14 @@ import "./story.css";
 import Image from 'next/image';
 import Stack from '@mui/material/Stack';
 import posts from '../../data/story-data.json';
+import {useSession} from "next-auth/react";
 
 const Page: React.FC = () => {
+
+    const session = useSession()
+
+    console.log(session)
+
     return (
         <>
             <div className="story">

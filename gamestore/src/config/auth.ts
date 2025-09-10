@@ -15,30 +15,52 @@ export const authOptions: NextAuthOptions = {
             },
             async authorize(credentials) {
                 if (!credentials?.email || !credentials?.password) return null;
+                    try {
+                        const res = await fetch("http://localhost:5000/login", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                                email: credentials.email,
+                                password: credentials.password,
+                            }),
+                        });
 
-                try {
-                    const res = await fetch("http://localhost:5000/register", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                            email: credentials.email,
-                            password: credentials.password,
-                        }),
-                    });
+                        if (!res.ok) return null;
 
-                    if (!res.ok) return null;
+                        const data = await res.json();
 
-                    const user = await res.json();
-
-                    console.log(user)
-                    return user;
-                } catch (err) {
-                    console.error("Authorize error:", err);
-                    return null;
-                }
-            },
+                        return {
+                            id: data.user.id,
+                            email: data.user.email,
+                            username: data.user.username,
+                            token: data.token,
+                        };
+                    } catch (err) {
+                        console.error("Authorize error:", err);
+                        return null;
+                    }
+                },
         })
     ],
+    callbacks: {
+        async jwt({ token, user }) {
+            if (user) {
+                token.accessToken = (user as any).token;
+                token.id = (user as any).id;
+                token.username = (user as any).username;
+            }
+            return token;
+        },
+        async session({ session, token }) {
+            if (token) {
+                (session.user as any).token = token.accessToken;
+                (session.user as any).id = token.id;
+                (session.user as any).username = token.username;
+            }
+            return session;
+        }
+    },
+
     secret: process.env.NEXTAUTH_SECRET,
     pages: {
         signIn: "/signin"

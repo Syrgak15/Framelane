@@ -3,6 +3,7 @@
 import React from 'react';
 import {signIn} from "next-auth/react";
 import {useRouter} from "next/navigation";
+import {creatingPages} from "../config/pages.config";
 
 export default function SignInForm ()  {
 
@@ -17,10 +18,12 @@ export default function SignInForm ()  {
         const res = await signIn("credentials", {
             email: formData.get('email'),
             password: formData.get('password'),
+            redirect: false
         },);
 
         if(res && !res.error) {
-            router.push("/profile");
+            localStorage.setItem("token", res?.token);
+            router.push(`/${creatingPages.PROFILE}`);
         } else {
             console.log(res);
         }

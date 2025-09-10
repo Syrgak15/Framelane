@@ -7,9 +7,9 @@ import { DataSource, DeepPartial } from "typeorm";
 import { Product } from "./entities/Product";
 import { Review } from "./entities/Review";
 import { Wishlist } from "./entities/Wishlist";
-import {Users} from "./entities/Users";
-import {compare, hash} from "bcryptjs";
-
+import { Users } from "./entities/Users";
+import { compare, hash } from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 const app = express();
 app.use(cors());
@@ -35,62 +35,80 @@ function broadcast(data: any) {
     });
 }
 
+const JWT_SECRET = process.env.JWT_SECRET || "supersecret";
+
+// 🔹 middleware для проверки токена
+function authMiddleware(req: any, res: any, next: any) {
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1];
+    if (!token) return res.status(401).json({ error: "No token provided" });
+
+    jwt.verify(token, JWT_SECRET, (err: any, decoded: any) => {
+        if (err) return res.status(403).json({ error: "Invalid token" });
+        req.user = decoded;
+        next();
+    });
+}
+
 AppDataSource.initialize()
     .then(async () => {
-        const repo = AppDataSource.getRepository(Product);
+        const productRepo = AppDataSource.getRepository(Product);
         const wishlistRepo = AppDataSource.getRepository(Wishlist);
+        const reviewRepo = AppDataSource.getRepository(Review);
+        const userRepo = AppDataSource.getRepository(Users);
+
         const PORT = process.env.PORT || 5000;
 
+        // 🔹 health check
         app.get("/", (_req, res) => {
             res.send("✅ Server is running");
         });
 
-
+        // 🔹 Products
         app.get("/products", async (req, res) => {
             const limit = parseInt(req.query.limit as string) || 5;
-            const products = await repo.find({ take: limit });
+            const products = await productRepo.find({ take: limit });
             res.json(products);
         });
 
-        app.post("/reviews/:slug", async (req, res) => {
+        app.get("/product/:slug", async (req, res) => {
+            const { slug } = req.params;
+            const product = await productRepo.findOneBy({ slug });
+            if (!product) return res.status(404).json({ error: "Product not found" });
+            res.json(product);
+        });
+
+        // 🔹 Reviews
+        app.post("/reviews/:slug", authMiddleware, async (req, res) => {
             try {
-                const { name, surname, rating, review, email } = req.body;
+                const { rating, review } = req.body;
                 const { slug } = req.params;
 
-                if (!name || !surname || !rating || !review || !email) {
-                    return res.status(400).json({ error: "Missing required fields" });
+                if (!rating || !review) {
+                    return res.status(400).json({ error: "Rating and review are required" });
                 }
 
                 const numRating = Math.round(Number(rating));
                 if (!Number.isFinite(numRating) || numRating < 1 || numRating > 5) {
-                    return res.status(400).json({ error: "Rating must be an integer 1–5" });
+                    return res.status(400).json({ error: "Rating must be 1–5" });
                 }
 
-                const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email));
-                if (!emailValid) {
-                    return res.status(400).json({ error: "Invalid email" });
-                }
-
-                const product = await repo.findOneBy({ slug });
+                const product = await productRepo.findOneBy({ slug });
                 if (!product) {
-                    return res.status(400).json({ error: "Product not found" });
+                    return res.status(404).json({ error: "Product not found" });
                 }
-
-                const reviewRepo = AppDataSource.getRepository(Review);
 
                 const draft: DeepPartial<Review> = {
-                    name: String(name).trim(),
-                    email: String(email).trim(),
-                    rating: Math.round(Number(rating)),
-                    review: String(review).trim(),
-                    product: { id: product.id },
+                    content: String(review).trim(),
+                    rating: numRating,
+                    product,
+                    user: { id: req?.user?.id },
                 };
 
                 const entity = reviewRepo.create(draft);
-                const saved  = await reviewRepo.save(entity);
+                const saved = await reviewRepo.save(entity);
 
-                const { product: _omit, ...payload } = saved;
-
+                const { product: _omit, user: _omit2, ...payload } = saved;
                 return res.status(201).json(payload);
             } catch (e) {
                 console.error(e);
@@ -101,17 +119,13 @@ AppDataSource.initialize()
         app.get("/reviews/:slug", async (req, res) => {
             try {
                 const { slug } = req.params;
-                const product = await repo.findOne({
+                const product = await productRepo.findOne({
                     where: { slug },
                     relations: ["reviews"],
                 });
 
-                if (!product) {
-                    return res.status(404).json({ error: "Product not found" });
-                }
-
+                if (!product) return res.status(404).json({ error: "Product not found" });
                 return res.json(product.reviews);
-
             } catch (e) {
                 console.error(e);
                 return res.status(500).json({ error: "Server error" });
@@ -121,12 +135,10 @@ AppDataSource.initialize()
         app.get("/reviews", async (req, res) => {
             try {
                 const limit = parseInt(req.query.limit as string) || 5;
-                const reviewRepo = AppDataSource.getRepository(Review);
                 const reviews = await reviewRepo.find({
-                    relations: ["product"],
+                    relations: ["product", "user"],
                     take: limit,
                 });
-
                 return res.json(reviews);
             } catch (e) {
                 console.error(e);
@@ -134,124 +146,35 @@ AppDataSource.initialize()
             }
         });
 
-        app.get("/product/:slug", async (req, res) => {
-            const { slug } = req.params;
-            const product = await repo.findOneBy({ slug });
-            if (!product) {
-                return res.status(404).json({ error: "Product not found" });
-            }
-            res.json(product);
-        });
-
-        app.post("/wishlist", async (req, res) => {
-            const toNumberOrNull = (v: unknown): number | null | "NaN" => {
-                if (v === undefined || v === null || v === "") return null;
-                const cleaned = String(v).replace(/[^\d.\-+]/g, "");
-                const n = Number(cleaned);
-                return Number.isFinite(n) ? n : "NaN";
-            };
-
-            const toIntOrNull = (v: unknown): number | null => {
-                if (v === undefined || v === null || v === "") return null;
-                const n = Number(v);
-                return Number.isInteger(n) ? n : null;
-            };
-
+        // 🔹 Wishlist
+        app.get("/wishlist", authMiddleware, async (req, res) => {
             try {
-                const { id: rawId, title, slug, image, price, rating } = req.body || {};
-
-                if (!title || typeof title !== "string" || !title.trim()) {
-                    return res.status(400).json({ error: 'Field "title" is required' });
-                }
-                if (!slug || typeof slug !== "string" || !slug.trim()) {
-                    return res.status(400).json({ error: 'Field "slug" is required' });
-                }
-
-                const numericPrice = toNumberOrNull(price);
-                if (numericPrice === "NaN") {
-                    return res.status(400).json({ error: 'Field "price" must be a number' });
-                }
-
-                const numericRating = toNumberOrNull(rating);
-                if (numericRating === "NaN") {
-                    return res.status(400).json({ error: 'Field "rating" must be a number' });
-                }
-
-                const id = toIntOrNull(rawId);
-
-                if (id !== null) {
-                    const item = await wishlistRepo.findOne({ where: { id } });
-                    if (item) {
-                        item.title = title.trim();
-                        item.slug = slug.trim();
-
-                        if (image !== undefined) item.image = image ?? null;
-
-                        if (price !== undefined) {
-                            item.price = numericPrice as number | null;
-                        }
-
-                        if (rating !== undefined) {
-                            item.rating = (numericRating as number | null) ?? null;
-                        }
-
-                        const saved = await wishlistRepo.save(item);
-                        return res.status(200).json({ status: "updated", item: saved });
-                    }
-                }
-
-                const draft: DeepPartial<Wishlist> = {
-                    title: title.trim(),
-                    slug: slug.trim(),
-                    image: image ?? null,
-                    price: (numericPrice as number | null) ?? null,
-                    rating: (numericRating as number | null) ?? null,
-                };
-
-                const created = await wishlistRepo.save(wishlistRepo.create(draft));
-                return res.status(201).json({ status: "created", item: created });
-            } catch (e: any) {
-                console.error("Wishlist error:", {
-                    name: e?.name,
-                    code: e?.code,
-                    message: e?.message,
-                    detail: e?.detail,
-                    stack: e?.stack,
+                const items = await wishlistRepo.find({
+                    where: { user: { id: req?.user?.id } },
                 });
-
-                if (e?.code === "SQLITE_CONSTRAINT") {
-                    const msg = String(e?.message || "");
-                    if (/UNIQUE constraint failed/i.test(msg)) {
-                        return res.status(409).json({ error: "Unique constraint violated (likely slug or title already exists)" });
-                    }
-                    if (/NOT NULL constraint failed/i.test(msg)) {
-                        return res.status(400).json({ error: "NOT NULL constraint failed (check required fields)" });
-                    }
-                    return res.status(409).json({ error: "Constraint violation" });
-                }
-
-                if (e?.code === "SQLITE_MISMATCH") {
-                    return res.status(400).json({ error: "Datatype mismatch (check numeric fields)" });
-                }
-
-                return res.status(500).json({ error: "Server error" });
+                res.json(items);
+            } catch (e) {
+                console.error(e);
+                res.status(500).json({ error: "Server error" });
             }
         });
 
-        app.post("/wishlist", async (req, res) => {
+        app.post("/wishlist", authMiddleware, async (req, res) => {
             try {
                 const { id: rawId, title, slug, image, price, rating } = req.body || {};
-                if (!title?.trim()) return res.status(400).json({ error: 'Field "title" is required' });
-                if (!slug?.trim()) return res.status(400).json({ error: 'Field "slug" is required' });
 
+                if (!title?.trim()) return res.status(400).json({ error: "Title is required" });
+                if (!slug?.trim()) return res.status(400).json({ error: "Slug is required" });
+
+                let item;
                 if (rawId) {
-                    const item = await wishlistRepo.findOne({ where: { id: rawId } });
+                    item = await wishlistRepo.findOne({ where: { id: rawId, user: { id: req?.user?.id } }, relations: ["user"] });
                     if (item) {
                         item.title = title.trim();
                         item.slug = slug.trim();
-                        if (image !== undefined) item.image = image ?? null;
-                        if (price !== undefined) item.price = Number(price) || null;
-                        if (rating !== undefined) item.rating = Number(rating) || null;
+                        item.image = image ?? null;
+                        item.price = price ? Number(price) : null;
+                        item.rating = rating ? Number(rating) : null;
 
                         const updated = await wishlistRepo.save(item);
                         broadcast({ type: "wishlist_updated", item: updated });
@@ -259,18 +182,22 @@ AppDataSource.initialize()
                     }
                 }
 
-                const existing = await wishlistRepo.findOne({ where: { slug: slug.trim() } });
+                const existing = await wishlistRepo.findOne({
+                    where: { slug: slug.trim(), user: { id: req?.user?.id } },
+                    relations: ["user"],
+                });
                 if (existing) return res.status(409).json({ error: "Item already exists in wishlist" });
 
-                const draft: DeepPartial<Wishlist> = {
+                item = wishlistRepo.create({
                     title: title.trim(),
                     slug: slug.trim(),
                     image: image ?? null,
-                    price: Number(price) || null,
-                    rating: Number(rating) || null,
-                };
+                    price: price ? Number(price) : null,
+                    rating: rating ? Number(rating) : null,
+                    user: { id: req?.user?.id },
+                });
 
-                const created = await wishlistRepo.save(wishlistRepo.create(draft));
+                const created = await wishlistRepo.save(item);
                 broadcast({ type: "wishlist_created", item: created });
                 return res.status(201).json({ status: "created", item: created });
             } catch (e) {
@@ -279,17 +206,19 @@ AppDataSource.initialize()
             }
         });
 
-        app.delete("/wishlist", async (req, res) => {
+        app.delete("/wishlist", authMiddleware, async (req, res) => {
             try {
                 const { slug } = req.body || {};
-                if (!slug?.trim()) return res.status(400).json({ error: 'Field "slug" is required' });
+                if (!slug?.trim()) return res.status(400).json({ error: "Slug is required" });
 
-                const item = await wishlistRepo.findOne({ where: { slug: slug.trim() } });
+                const item = await wishlistRepo.findOne({
+                    where: { slug: slug.trim(), user: { id: req?.user?.id } },
+                    relations: ["user"],
+                });
                 if (!item) return res.status(404).json({ error: "Item not found" });
 
                 await wishlistRepo.remove(item);
                 broadcast({ type: "wishlist_deleted", slug: slug.trim() });
-
                 return res.status(200).json({ status: "deleted", slug: slug.trim() });
             } catch (e) {
                 console.error("Wishlist delete error:", e);
@@ -297,11 +226,10 @@ AppDataSource.initialize()
             }
         });
 
-        app.delete("/wishlist/all", async (_req, res) => {
+        app.delete("/wishlist/all", authMiddleware, async (req, res) => {
             try {
-                await wishlistRepo.clear(); // удаляет все записи из таблицы
-                broadcast({ type: "wishlist_cleared" });
-
+                await wishlistRepo.delete({ user: { id: req?.user?.id } });
+                broadcast({ type: "wishlist_cleared", userId: req?.user?.id });
                 return res.status(200).json({ status: "all deleted" });
             } catch (e) {
                 console.error("Wishlist clear error:", e);
@@ -309,54 +237,52 @@ AppDataSource.initialize()
             }
         });
 
-        app.get("/wishlist", async (_req, res) => {
-            try {
-                const wishlistItems = await wishlistRepo.find();
-                res.json(wishlistItems);
-            } catch (error) {
-                console.error(error);
-                res.status(500).json({ error: "Server error" });
-            }
-        });
-
+        // 🔹 Auth
         app.post("/register", async (req, res) => {
             try {
-                const { email, password } = req.body;
-                if (!email || !password) return res.status(400).json({ error: "Email and password required" });
+                const { email, password, username } = req.body;
 
-                const userRepo = AppDataSource.getRepository(Users);
-                const exists = await userRepo.findOne({ where: { email } });
-                if (exists) return res.status(409).json({ error: "User already exists" });
+                if (!email || !password || !username) {
+                    return res.status(400).json({ error: "Email, username and password are required" });
+                }
+
+                const existsEmail = await userRepo.findOne({ where: { email } });
+                if (existsEmail) return res.status(409).json({ error: "User with this email already exists" });
+
+                const existsUsername = await userRepo.findOne({ where: { username } });
+                if (existsUsername) return res.status(409).json({ error: "Username already taken" });
 
                 const hashedPassword = await hash(password, 10);
-                const newUser = userRepo.create({ email, password: hashedPassword });
+
+                const newUser = userRepo.create({ email, username, password: hashedPassword });
                 await userRepo.save(newUser);
 
-                res.status(201).json({ message: "User created" });
+                res.status(201).json({ message: "User created successfully" });
             } catch (e) {
                 console.error(e);
                 res.status(500).json({ error: "Server error" });
             }
         });
+
         app.post("/login", async (req, res) => {
             try {
                 const { email, password } = req.body;
-                if (!email || !password) {
-                    return res.status(400).json({ error: "Email and password required" });
-                }
+                if (!email || !password) return res.status(400).json({ error: "Email and password are required" });
 
-                const userRepo = AppDataSource.getRepository(Users);
                 const user = await userRepo.findOne({ where: { email } });
-
                 if (!user) return res.status(401).json({ error: "Invalid credentials" });
 
                 const isPasswordValid = await compare(password, user.password);
-                if (!isPasswordValid) {
-                    return res.status(401).json({ error: "Invalid credentials" });
-                }
+                if (!isPasswordValid) return res.status(401).json({ error: "Invalid credentials" });
 
-                // Возвращаем данные пользователя (но пароль не отдаём!)
-                res.json({ id: user.id.toString(), email: user.email });
+                const token = jwt.sign({ id: user.id, email: user.email, username: user.username }, JWT_SECRET, {
+                    expiresIn: "1h",
+                });
+
+                res.json({
+                    token,
+                    user: { id: user.id, email: user.email, username: user.username },
+                });
             } catch (e) {
                 console.error(e);
                 res.status(500).json({ error: "Server error" });

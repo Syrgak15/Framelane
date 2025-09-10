@@ -1,4 +1,5 @@
-import {Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne} from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import { Users } from "./Users";
 import { Product } from "./Product";
 
 @Entity()
@@ -6,21 +7,15 @@ export class Review {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column()
-    name!: string;
+    @Column("text", { nullable: true })
+    content!: string;
 
-    @Column()
-    email!: string;
-
-    @Column()
+    @Column({ type: "int" })
     rating!: number;
 
-    @Column()
-    review!: string;
+    @ManyToOne(() => Users, (user) => user.reviews, { onDelete: "CASCADE" })
+    user!: Users;
 
-    @CreateDateColumn()
-    createdAt!: Date;
-
-    @ManyToOne(() => Product, (product) => product.reviews, { nullable: false })
+    @ManyToOne(() => Product, (product) => product.reviews, { onDelete: "CASCADE" })
     product!: Product;
 }

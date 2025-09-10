@@ -1,5 +1,6 @@
 import CollectionsClientComponent from "./CollectionsClientComponent";
 
+
 async function getCollectionsPageData () {
     try {
         const req = await fetch('http://localhost:5000/products?limit=30', {cache: "no-store"});
@@ -17,6 +18,8 @@ async function getCollectionsPageData () {
 }
 
 async function getFavoriteProducts (){
+
+
     try {
         const req = await fetch('http://localhost:5000/wishlist', {cache: "no-store"});
 

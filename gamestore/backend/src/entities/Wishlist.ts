@@ -1,4 +1,5 @@
-import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import { Users } from "./Users";
 
 @Entity()
 export class Wishlist {
@@ -8,15 +9,18 @@ export class Wishlist {
     @Column()
     title!: string;
 
-    @Column({ unique: true, type: "text" })
+    @Column()
     slug!: string;
 
-    @Column()
+    @Column({ nullable: true })
     image!: string;
 
-    @Column("real", { nullable: true })
+    @Column({ type: "float", nullable: true })
     price!: number | null;
 
     @Column({ type: "float", nullable: true })
-    rating?: number | null;
+    rating!: number | null;
+
+    @ManyToOne(() => Users, (user) => user.wishlist, { onDelete: "CASCADE" })
+    user!: Users;
 }

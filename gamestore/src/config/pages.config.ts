@@ -18,7 +18,14 @@ class FooterPagesConfig {
     DELIVERY = "delivery";
 }
 
+class CreatingPages {
+    SIGNIN = "signin";
+    SIGNUP = "signup";
+    PROFILE = "profile"
+}
+
 export const headerPageConfig = new HeaderPagesConfig();
 export const contactUsConfig = new ContactUsConfig();
 export const footerPageConfig = new FooterPagesConfig();
 export const productConfig = new ProductConfig();
+export const creatingPages = new CreatingPages();

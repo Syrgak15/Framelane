@@ -11,7 +11,9 @@ interface CollectionsState {
 export const getWishlistItems = createAsyncThunk(
     'collections/getWishlistItems',
     async () => {
-        const res = await fetch("http://localhost:5000/wishlist", {cache: "no-store"},)
+        const res = await fetch("http://localhost:5000/wishlist", {
+            cache: "no-store",
+        },)
         const data = await res.json();
         return data;
     }
