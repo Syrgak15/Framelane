@@ -11,7 +11,7 @@ export type ProductReview = {
     name: string;
     surname?: string;
     email: string;
-    rating: number;
+    rating: number | null;
     review: string;
 };
 

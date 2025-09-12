@@ -2,13 +2,14 @@ import NextAuth, { DefaultSession, DefaultUser } from "next-auth";
 
 declare module "next-auth" {
     interface User extends DefaultUser {
+        id: string;
         username: string;
         accessToken: string;
         refreshToken: string;
         expiresIn: number;
     }
 
-    interface Session {
+    interface Session extends DefaultSession {
         user: {
             id: string;
             username: string;
@@ -23,5 +24,6 @@ declare module "next-auth" {
         accessToken: string;
         refreshToken: string;
         expiresAt: number;
+        error?: string;
     }
 }

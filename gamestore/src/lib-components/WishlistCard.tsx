@@ -28,7 +28,7 @@ export default function MediaCard({ image, title, price }: MediaCardProps) {
                     width: '100%',
                     objectFit: 'cover',
                 }}
-                image={image}
+                image={image ?? undefined}
             />
             <CardContent
                 sx={{

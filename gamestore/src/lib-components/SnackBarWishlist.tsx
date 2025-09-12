@@ -105,7 +105,10 @@ export default function AutoHideSnackbar({ data, wishlistItems, token }: Props) 
                         color: "#3d6da3",
                     })
                 }}
-                onClick={() => handleClick({ item: product, token, slug: product.slug })}
+                onClick={() => {
+                    if (!product) return;
+                    handleClick({ item: product, token, slug: product.slug })}
+                }
                 variant="outlined"
             >
                 <FavoriteIcon />

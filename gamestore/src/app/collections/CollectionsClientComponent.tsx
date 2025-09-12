@@ -13,7 +13,6 @@ import {
     deleteProductFromWishlist
 } from "../../features/slices/productPageReducer";
 import {useAppDispatch} from "../../store/hooks";
-import {useSession} from "next-auth/react";
 
 export type CollectionProduct = {
         id: number;

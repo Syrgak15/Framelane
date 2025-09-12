@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import {signIn} from "next-auth/react";
+import {signIn, useSession} from "next-auth/react";
 import {useRouter} from "next/navigation";
 import {creatingPages} from "../config/pages.config";
 
@@ -22,7 +22,6 @@ export default function SignInForm ()  {
         },);
 
         if(res && !res.error) {
-            localStorage.setItem("token", res?.token);
             router.push(`/${creatingPages.PROFILE}`);
         } else {
             console.log(res);
