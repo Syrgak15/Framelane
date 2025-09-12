@@ -1,8 +1,13 @@
+.collections {
+    margin-top: 80px;
+}
+
 .collections-wrapper {
     max-width: 1800px;
     margin: 0 auto;
     padding-top: 100px;
 }
+
 .collections-header {
     padding-top: 30px;
     margin: 0 auto;
@@ -13,6 +18,7 @@
     flex-direction: column;
     gap: 22px;
 }
+
 .collections-header__title {
     color: var(--fr-primary-color);
     font-size: 40px;
@@ -22,28 +28,94 @@
     text-align: center;
 }
 
-.collections {
-    margin-top: 80px;
-}
-
 .collections-content-filters__form {
     margin-top: 100px;
     display: flex;
     gap: 16px;
     justify-content: space-between;
 }
+
 .collections-filters__item {
     width: 60px;
 }
+
 .collections-filters__item .filtering {
     padding-left: 5px;
 }
+
 .collections-grid {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
     gap: 15px;
     margin-bottom: 100px;
 }
+
 .collections__grid-link {
     position: relative;
 }
+
+/*MEDIA QUERIES*/
+
+@media (max-width: 1400px) {
+    .collections-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 1024px) {
+    .collections-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .collections-header__title {
+        font-size: 32px;
+    }
+
+    .collections-content-filters__form {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+}
+
+@media (max-width: 768px) {
+    .collections-grid {
+        grid-template-columns: 1fr;
+        gap: 25px;
+    }
+
+    .collections-header__title {
+        font-size: 28px;
+    }
+
+    .collections-wrapper {
+        padding-top: 60px;
+    }
+
+    .collections-content-filters__form {
+        margin-top: 50px;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .collections-header__title {
+        font-size: 22px;
+    }
+
+    .collections {
+        margin-top: 40px;
+    }
+
+    .collections-wrapper {
+        padding-top: 40px;
+    }
+
+    .collections-content-filters__form {
+        margin-top: 30px;
+        width: 100%;
+        gap: 8px;
+    }
+}
+

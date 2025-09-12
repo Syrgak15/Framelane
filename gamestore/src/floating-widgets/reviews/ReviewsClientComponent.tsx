@@ -17,7 +17,7 @@ export type Reviews = {
     name: string;
     email: string;
     rating: number;
-    review: string;
+    content: string;
     createdAt: string;
     product: {
         id: number;
@@ -135,7 +135,7 @@ export default function Reviews({reviews} : {reviews: Reviews[]}) {
                                 </div>
 
                                 <div className="reviews__content-list-item-text">
-                                    <p>{el.review}</p>
+                                    <p>{el.content}</p>
                                 </div>
 
                             </li>

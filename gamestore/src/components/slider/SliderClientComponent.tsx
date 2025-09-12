@@ -25,7 +25,7 @@ type SliderProps = {
 export default function Slider({slides} : {slides: SliderProps[]}) {
 
     const uniqueSlides = uniqueBy(slides,["email", "review", "product.image", "name"])
-
+    console.log(uniqueSlides)
     return (
         <div className="slider-wrapper">
             <div className="slider-wrapper__title">
@@ -80,7 +80,7 @@ export default function Slider({slides} : {slides: SliderProps[]}) {
                                         }}
                                         gutterBottom variant="h5"
                                         component="div">
-                                        {slide.review}
+                                        {slide.content}
                                     </Typography>
                                     <Typography
                                         sx={{

@@ -12,8 +12,8 @@ import {
     addProductToWishlist,
     deleteProductFromWishlist
 } from "../../features/slices/productPageReducer";
-import {useAppDispatch, useAppSelector} from "../../store/hooks";
-import {RootState} from "../../store";
+import {useAppDispatch} from "../../store/hooks";
+import {useSession} from "next-auth/react";
 
 export type CollectionProduct = {
         id: number;
@@ -51,9 +51,11 @@ type SortOrder = "asc" | "desc" | null;
 export default function CollectionsPage({
                                             posts,
                                             initialItems,
+                                            token
                                         }: {
     posts: CollectionProduct[];
     initialItems: WishlistItem[];
+    token: string;
 }) {
     const [priceSortOrder, setPriceSortOrder] = useState<SortOrder>("asc");
     const [isClicked, setIsClicked] = React.useState(false);
@@ -70,9 +72,6 @@ export default function CollectionsPage({
 
             if (message.type === "wishlist_updated") {
                 setWishlistItems((prev) => [...prev, message.item]);
-            }
-            if (message.type === "wishlist_deleted") {
-                setWishlistItems((prev) => prev.filter((p) => p.slug !== message.slug));
             }
             if (message.type === "wishlist_cleared") {
                 setWishlistItems([]);
@@ -113,14 +112,16 @@ export default function CollectionsPage({
     const handleClick = (data) => {
         if (!wishlistItems.some((item) => item.slug === data.slug)) {
             setWishlistItems((prev) => [...prev, data]);
-            dispatch(addProductToWishlist({ data }));
+            dispatch(addProductToWishlist({ data, token }));
             setIsClicked(true);
         } else {
             setWishlistItems((prev) => prev.filter((item) => item.slug !== data.slug));
-            dispatch(deleteProductFromWishlist({ data }));
+            const slug = data?.slug;
+            dispatch(deleteProductFromWishlist({ slug, token }));
             setIsClicked(false);
         }
     };
+
 
     return (
         <div className="collections">

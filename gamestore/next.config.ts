@@ -10,6 +10,9 @@ const nextConfig: NextConfig = {
         config.externals["typeorm"] = "commonjs typeorm";
         return config;
     },
+    eslint: {
+        ignoreDuringBuilds: true,
+    },
 };
 
 export default nextConfig;

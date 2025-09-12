@@ -4,7 +4,7 @@ export type Product = {
     title: string;
     image: string;
     price: string;
-    slug?: string;
+    slug: string; // slug обязателен
 };
 
 export type ProductReview = {
@@ -18,6 +18,7 @@ export type ProductReview = {
 type PostProductReviewArgs = {
     slug: string;
     data: ProductReview;
+    token: string;
 };
 
 export type WishlistProduct = {
@@ -29,21 +30,24 @@ export type WishlistProduct = {
     rating?: number | null;
 };
 
-interface DeleteFromWishlistArgs {
-    data: { id: number }
-}
-
-export type addToWishlistArgs = {
+export type AddToWishlistArgs = {
     data: {
-        id?: number;
         title: string;
+        slug: string;
         image?: string | null;
         price?: string | null;
         rating?: number | string | null;
     };
+    token: string;
 };
 
-type ApiError = { error: string };
+export type DeleteFromWishlistArgs = {
+    slug: string;
+    token: string;
+};
+
+export type ApiError = { error: string };
+
 
 
 type ProductPageState = {
@@ -69,11 +73,14 @@ export const fetchProductBySlug = createAsyncThunk<Product, string>(
 
 export const postProductReview = createAsyncThunk<ProductReview, PostProductReviewArgs>(
     'product/postProductReview',
-    async ({ slug, data }, { rejectWithValue }) => {
+    async ({ slug, data, token }, { rejectWithValue }) => {
         try {
             const res = await fetch(`http://localhost:5000/reviews/${slug}`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
                 body: JSON.stringify(data),
             });
             if (!res.ok) {
@@ -82,7 +89,8 @@ export const postProductReview = createAsyncThunk<ProductReview, PostProductRevi
             }
             return await res.json() as ProductReview;
         } catch (e) {
-            return rejectWithValue(e?.message ?? 'Unknown error');
+            const err = e as Error;
+            return rejectWithValue(err.message ?? 'Unknown error');
         }
     }
 );
@@ -90,16 +98,19 @@ export const postProductReview = createAsyncThunk<ProductReview, PostProductRevi
 
 export const addProductToWishlist = createAsyncThunk<
     WishlistProduct,
-    addToWishlistArgs,
+    AddToWishlistArgs,
     { rejectValue: ApiError }
 >(
-    'product/addProductToWishlist',
-    async ({ data }, { rejectWithValue }) => {
+    "product/addProductToWishlist",
+    async ({ data, token }, { rejectWithValue }) => {
         try {
-            const res = await fetch(`http://localhost:5000/wishlist`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data),
+            const res = await fetch("http://localhost:5000/wishlist", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: JSON.stringify(data), // только бизнес-данные
             });
 
             const payload = await res.json();
@@ -109,78 +120,74 @@ export const addProductToWishlist = createAsyncThunk<
             }
 
             const item = (payload?.item ?? payload) as WishlistProduct;
-
             return item;
         } catch {
-            return rejectWithValue({ error: 'Network error' });
+            return rejectWithValue({ error: "Network error" });
         }
     }
 );
+
 
 export const deleteProductFromWishlist = createAsyncThunk<
-    WishlistProduct,
-    DeleteFromWishlistArgs
+    { slug: string },
+    DeleteFromWishlistArgs,
+    { rejectValue: ApiError }
 >(
-    'product/deleteProductFromWishlist',
-    async ({data}, {rejectWithValue}) => {
+    "product/deleteProductFromWishlist",
+    async ({ slug, token }, { rejectWithValue }) => {
         try {
-            const res = await fetch(`http://localhost:5000/wishlist`, {
-                method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data),
-            });
+            const res = await fetch("http://localhost:5000/wishlist", {
+                method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                }});
 
             const payload = await res.json();
 
             if (!res.ok) {
-                return rejectWithValue('Failed to delete product from wishlist')
+                return rejectWithValue(payload as ApiError);
             }
 
-            const { id, title, slug, image, price } = payload
-
-            return {
-                id,
-                title,
-                slug,
-                image,
-                price,
-            };
-
-        } catch(e) {
-            console.error(e);
+            return { slug: payload?.slug ?? slug };
+        } catch {
+            return rejectWithValue({ error: "Network error" });
         }
     }
 );
+
 
 export const deleteAllProductFromWishlist = createAsyncThunk<
-    WishlistProduct,
-    addToWishlistArgs
+    { status : string },
+    { token: string },
+    { rejectValue: ApiError }
 >(
-    'product/deleteAllProductFromWishlist',
-    async ({data}, {rejectWithValue}) => {
+    "product/deleteAllProductFromWishlist",
+    async ({ token  }, { rejectWithValue }) => {
         try {
-            const res = await fetch(`http://localhost:5000/wishlist/all`, {
-                method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data),
+            const res = await fetch("http://localhost:5000/wishlist/all", {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
             });
 
             const payload = await res.json();
 
             if (!res.ok) {
-                return rejectWithValue('Failed to delete wishlist')
+                return rejectWithValue(payload as ApiError);
             }
 
-            return payload;
-
-        } catch(e) {
-            console.error(e);
+            return payload as { status: string };
+        } catch {
+            return rejectWithValue({ error: "Network error" });
         }
     }
 );
 
+
 const productReducer = createSlice({
-    name: 'products',
+    name: "products",
     initialState,
     reducers: {},
     extraReducers: (builder) => {
@@ -195,12 +202,13 @@ const productReducer = createSlice({
                 state.wishlist.push(action.payload);
             })
             .addCase(deleteProductFromWishlist.fulfilled, (state, action) => {
-                state.wishlist = state.wishlist.filter((wishlist) => wishlist.id !== action.payload.id);
+                state.wishlist = state.wishlist.filter(
+                    (w) => w.slug !== action.payload.slug
+                );
             })
             .addCase(deleteAllProductFromWishlist.fulfilled, (state) => {
                 state.wishlist = [];
-            })
-
+            });
     },
 });
 

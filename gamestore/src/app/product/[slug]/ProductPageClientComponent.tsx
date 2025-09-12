@@ -21,7 +21,7 @@ export type Product = {
 };
 
 
-export default function ProductPage({ productInfo, wishlistItems } : {productInfo: Product, wishlistItems: WishlistItem[]}) {
+export default function ProductPage({ productInfo, wishlistItems, token } : {productInfo: Product, wishlistItems: WishlistItem[], token: string}) {
 
     const data = productInfo;
 
@@ -40,11 +40,10 @@ export default function ProductPage({ productInfo, wishlistItems } : {productInf
                         <h2 className="product__title">{productInfo.title}</h2>
 
                         <div className="product__price">
-                            <span>{productInfo.price}</span>
-                            <p>Including prescription lenses</p>
+                            <span>{productInfo.price} Including prescription lenses</span>
                         </div>
                         <div className="product__btns">
-                            <Button
+                        <Button
                                 sx={{
                                     background: "3d6da3",
                                     borderRadius: "40px",
@@ -52,8 +51,9 @@ export default function ProductPage({ productInfo, wishlistItems } : {productInf
                                     width: "300px",
                                     marginTop: "35px"
                                 }}
-                                variant="contained">Buy it now</Button>
-                            <SnackBarWishlist data={data} wishlistItems={wishlistItems}/>
+                                disabled
+                                variant="contained">Soon</Button>
+                            <SnackBarWishlist data={data} wishlistItems={wishlistItems} token={token}/>
                         </div>
 
                         <ul className="product__highlight-list">

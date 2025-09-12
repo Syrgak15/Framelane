@@ -9,14 +9,13 @@ type Review = {
     surname?: string;
     email: string;
     rating: number;
-    review: string;
+    content: string;
     createdAt: string;
     slug: string;
 };
 
-export default async function ReviewsWidget({ reviews, slug }: { reviews: Review[], slug: string }) {
+export default async function ReviewsWidget({ reviews,token, slug }: { reviews: Review[], token: string, slug: string}) {
     const dateSortOrder = "desc";
-
     const sortedReviews = [...reviews].sort((a, b) => {
         if (!dateSortOrder) return 0;
 
@@ -33,7 +32,7 @@ export default async function ReviewsWidget({ reviews, slug }: { reviews: Review
             key={i}
         />
     ))
-
+    console.log(reviews)
     return (
         <div className="product__reviews-main">
             <div className="product__reviews-container">
@@ -56,7 +55,7 @@ export default async function ReviewsWidget({ reviews, slug }: { reviews: Review
                     </div>
 
                     <div className="product__reviews-right-block">
-                        <ModalPopUp slug={slug}/>
+                        <ModalPopUp slug={slug} token={token}/>
                     </div>
                 </div>
 
@@ -79,7 +78,7 @@ export default async function ReviewsWidget({ reviews, slug }: { reviews: Review
                                         className="review__avatar"
                                         aria-hidden="true"
                                     >
-                                        {review.name.charAt(0).toUpperCase()}
+                                        {review.name?.charAt(0).toUpperCase()}
                                     </div>
                                     <div className="review__content">
                                         <div className="review__header">
@@ -106,7 +105,7 @@ export default async function ReviewsWidget({ reviews, slug }: { reviews: Review
                                             </div>
                                         </div>
 
-                                        <p className="review__text">{review.review}</p>
+                                        <p className="review__text">{review.content}</p>
 
                                         <time className="reviews__date" dateTime={review.createdAt}>
                                             {new Date(review.createdAt).toLocaleDateString()}

@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "export": "next export",
     "start": "next start",
     "lint": "next lint"
   },
@@ -26,6 +27,7 @@
     "react-hook-form": "^7.56.3",
     "react-redux": "^9.2.0",
     "redux": "^5.0.1",
+    "reflect-metadata": "^0.2.2",
     "swiper": "^11.2.8"
   },
   "devDependencies": {

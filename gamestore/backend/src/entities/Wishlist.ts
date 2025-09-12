@@ -1,7 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, ManyToOne, Unique} from "typeorm";
 import { Users } from "./Users";
 
 @Entity()
+@Unique(["slug", "user"])
 export class Wishlist {
     @PrimaryGeneratedColumn()
     id!: number;
@@ -15,10 +16,10 @@ export class Wishlist {
     @Column({ nullable: true })
     image!: string;
 
-    @Column({ type: "float", nullable: true })
+    @Column({ type: "real", nullable: true })
     price!: number | null;
 
-    @Column({ type: "float", nullable: true })
+    @Column({ type: "real", nullable: true })
     rating!: number | null;
 
     @ManyToOne(() => Users, (user) => user.wishlist, { onDelete: "CASCADE" })

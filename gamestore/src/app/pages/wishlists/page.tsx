@@ -1,21 +1,32 @@
 import WishlistPageClientComponent from "./WishlistPageClientComponent";
+import {getServerSession} from "next-auth";
+import {authOptions} from "../../../config/auth";
 
 async function getWishlistData() {
-    const res = await fetch(`http://localhost:5000/wishlist`, {
-        cache: "no-store",
-    });
+    const session = await getServerSession(authOptions)
 
-    if (!res.ok) {
-        throw new Error("Product not found");
+    try{
+        const res = await fetch(`http://localhost:5000/wishlist`, {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${session!.user?.accessToken}`
+            },
+            cache: "no-store",
+        });
+
+        const data = await res.json();
+
+        return data;
+
+    }catch(e){
+        console.error(e);
     }
-
-    const data = await res.json();
-    return data;
 }
 
 export default async function WishlistPageServerComponent () {
+    const session = await getServerSession(authOptions)
 
     const wishlistPageData = await getWishlistData();
 
-    return <WishlistPageClientComponent wishlistPageData={wishlistPageData} />
+    return <WishlistPageClientComponent wishlistPageData={wishlistPageData} token={session!.user.accessToken} />
 }

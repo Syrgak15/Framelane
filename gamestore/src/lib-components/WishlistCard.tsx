@@ -5,7 +5,7 @@ import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 
 type MediaCardProps = {
-    image: string;
+    image: string | null;
     key: number;
     title: string;
     price?: number | string;

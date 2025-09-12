@@ -18,14 +18,14 @@ export default function MediaCollectionCard({image, title, price}: MediaCardColl
         <>
             <Card
                 sx={{
-                    width: 435 ,
-                    cursor: 'pointer',
-                    transition: 'all 0.3s ease',
-                    '&:hover': {
-                        scale: '1.01'
+                    width: "100%",
+                    cursor: "pointer",
+                    transition: "all 0.3s ease",
+                    "&:hover": {
+                        scale: "1.01",
                     },
-                    borderRadius: '0px',
-                    boxShadow: 'unset'
+                    borderRadius: "0px",
+                    boxShadow: "unset",
                 }}>
                 <CardMedia
                     sx={{height: 500}}

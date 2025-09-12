@@ -51,7 +51,7 @@ export default function ReviewsPageCard({reviewsData}: { reviewsData: Reviews[] 
                                 ))}
                             </div>
                             <div className="reviews__text">
-                                <p className="reviews__text">{review.review}</p>
+                                <p className="reviews__text">{review.content}</p>
                             </div>
 
                             <div className="reviews__date">

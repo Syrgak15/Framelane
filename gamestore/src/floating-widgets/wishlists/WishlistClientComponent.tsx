@@ -26,11 +26,12 @@ export interface WishlistItem {
     title: string;
     slug: string;
     image: string | null;
-    price: number | string | null;
+    price: string | number | undefined;
     rating: number | null;
 }
 
-export default function Wishlists({initialItems} : {initialItems : WishlistItem[]}) {
+export default function Wishlists({initialItems, token} : {initialItems : WishlistItem[], token: string}) {
+
     const [state, setState] = React.useState({
         right: false
     });
@@ -58,8 +59,8 @@ export default function Wishlists({initialItems} : {initialItems : WishlistItem[
         return () => ws.close();
     }, []);
 
-    const deleteAllFromWishlist = async (data) => {
-        dispatch(deleteAllProductFromWishlist({ data }));
+    const deleteAllFromWishlist = async () => {
+        dispatch(deleteAllProductFromWishlist({ token }));
         setWishlistItems([]);
     };
 
@@ -134,7 +135,7 @@ export default function Wishlists({initialItems} : {initialItems : WishlistItem[
                         <div className="wishlist__root-list-divider"></div>
                         <div className="wishlist__root-list-options">
                             <button
-                                onClick={() => {deleteAllFromWishlist(wishlistItems)}}
+                                onClick={() => {deleteAllFromWishlist()}}
                                 className="wishlist__root-list-options-btn">
                                 <p className="wishlist__root-list-options-text">
                                     Delete

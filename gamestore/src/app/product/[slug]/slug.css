@@ -1,7 +1,8 @@
+
 .product__wrapper, .product__reviews-container {
     max-width: 1800px;
     margin: 0 auto;
-    padding-bottom: 250px;
+    padding-bottom: 150px;
 }
 .product__breadcrumbs {
     margin-bottom: 50px;
@@ -38,9 +39,7 @@
 .product__highlight-list, .product__reviews-headings{
     margin-top: 20px;
 }
-.product__reviews-widget, .product__reviews-main, .product__reviews-layout-reviews-list {
-    margin-top: 100px;
-}
+
 .product__highlight-list-item {
     list-style-type: none;
     display: flex;
@@ -160,10 +159,17 @@
     color: #000;
 }
 .product__title {
-    font-weight: 800;
-    font-size: 14px;
+    font-size: 32px;
+    line-height: 44px;
+    font-weight: 400;
 }
-
+.product__price {
+    font-size: 14px;
+    line-height: 24px;
+    font-weight: 200;
+    color: #000;
+    margin-top: 20px;
+}
 .product__reviews-left-block {
     display: flex;
     text-align: center;

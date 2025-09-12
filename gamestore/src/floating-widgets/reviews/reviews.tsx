@@ -6,7 +6,7 @@ export type Reviews = {
     name: string;
     email: string;
     rating: number;
-    review: string;
+    content: string;
     createdAt: string;
     product: {
         id: number;
@@ -46,7 +46,31 @@ async function getReviews(): Promise<Reviews[]> {
 async function ReviewsServerComponent ()  {
     const allReviews = await getReviews();
 
-    return <ReviewsClientComponent reviews={allReviews} />;
+    const fakeNames = ["Emma", "Liam", "Olivia", "Noah", "Sophia", "James", "Isabella", "Ethan"];
+    const fakeReviews = [
+        "Absolutely love this product! The quality exceeded my expectations.",
+        "Great value for the price. Will definitely order again!",
+        "The design is sleek and stylish — highly recommend.",
+        "Delivery was fast and the product works perfectly.",
+        "Amazing! I got so many compliments already.",
+        "Good quality overall, though packaging could be better.",
+    ];
+
+    const preparedSlides = allReviews.map((item, index) => {
+        const randomName = fakeNames[index % fakeNames.length];
+        const randomReview = fakeReviews[index % fakeReviews.length];
+
+        return {
+            ...item,
+            name: item.name && item.name !== "Anonymous" ? item.name : randomName,
+            email:
+                item.email && item.email !== "unknown@example.com"
+                    ? item.email
+                    : `${randomName.toLowerCase()}@example.com`,
+            content: item.content || randomReview,
+        };
+    });
+    return <ReviewsClientComponent reviews={preparedSlides} />;
 };
 
 export default ReviewsServerComponent;

@@ -36,7 +36,6 @@ const MainPageClient: React.FC<Props> = ({glassesData}) => {
 
     const filteredGlasses = glassesData;
 
-
     return <>
         <div className="products-wrapper">
             <div className="products-heading">
@@ -48,8 +47,8 @@ const MainPageClient: React.FC<Props> = ({glassesData}) => {
             {filteredGlasses && (
                 <ul className="products-list">
                     {filteredGlasses.map((glass, index) => (
-                        <Link href={`/${productConfig.PRODUCT}/${glass.slug}`} key={index}>
-                            <MediaCard key={index} image={glass.image} title={glass.title} price={glass.price}/>
+                        <Link href={`/${productConfig.PRODUCT}/${glass.product.slug}`} key={index}>
+                            <MediaCard key={index} image={glass.product.image} title={glass.product.title} price={glass.product.price}/>
                         </Link>
                     ))}
                 </ul>

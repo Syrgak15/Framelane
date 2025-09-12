@@ -12,14 +12,14 @@ import {productConfig} from "../../../config/pages.config";
 import WishlistCard from "../../../lib-components/WishlistCard";
 import EmptyWishlistComponent from "../../../floating-widgets/wishlists/EmptyWishlistComponent";
 
-export default function WishlistPage ({wishlistPageData} : {wishlistPageData : WishlistItem[]}) {
+export default function WishlistPage ({wishlistPageData, token} : {wishlistPageData : WishlistItem[], token: string}) {
     const dispatch = useAppDispatch();
     const [expanded, setExpanded] = useState(false);
     const [wishlistItems, setWishlistItems] = React.useState<WishlistItem[]>(wishlistPageData);
     const sortedWishlistData = sortArray(wishlistItems, "desc");
 
-    const deleteAllFromWishlist = async (data) => {
-        dispatch(deleteAllProductFromWishlist({ data }));
+    const deleteAllFromWishlist = async () => {
+        dispatch(deleteAllProductFromWishlist({ token }));
         setWishlistItems([]);
     };
 
@@ -52,7 +52,7 @@ export default function WishlistPage ({wishlistPageData} : {wishlistPageData : W
                             <div className="wishlist__options-list-divider"></div>
                             <div className="wishlist__options-list-delete">
                                 <button
-                                    onClick={() => deleteAllFromWishlist(sortedWishlistData)}
+                                    onClick={() => deleteAllFromWishlist()}
                                     className="wishlist__options-list--btn">
                                     <p className="wishlist__options-list-text">
                                         Delete

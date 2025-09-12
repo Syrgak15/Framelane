@@ -5,13 +5,9 @@ import "./story.css";
 import Image from 'next/image';
 import Stack from '@mui/material/Stack';
 import posts from '../../data/story-data.json';
-import {useSession} from "next-auth/react";
 
 const Page: React.FC = () => {
 
-    const session = useSession()
-
-    console.log(session)
 
     return (
         <>
@@ -112,17 +108,22 @@ const Page: React.FC = () => {
                         <Stack
                             direction="row"
                             spacing={0}
+                            flexWrap="wrap"
+                            justifyContent="center"
                         >
                             {posts.map((post, index) => (
                                 <div key={index} className="story__people-list-image-wrapper">
-                                    <img className="story__people-list-image" src={post.img}
-                                         alt={post.title}
+                                    <img
+                                        className="story__people-list-image"
+                                        src={post.img}
+                                        alt={post.title}
                                     />
                                     <h3 className="story__people-list-title">{post.title}</h3>
                                 </div>
                             ))}
                         </Stack>
                     </div>
+
                 </section>
             </div>
         </>

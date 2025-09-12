@@ -10,7 +10,8 @@
     "skipLibCheck": true,
     "typeRoots": ["./src/types", "./node_modules/@types"],
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
+    "strictPropertyInitialization": false
   },
   "include": ["src"]
 }

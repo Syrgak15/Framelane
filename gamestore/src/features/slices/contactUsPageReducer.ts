@@ -1,14 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 type ContactUsPageState = {
-    loading: boolean;
-    error: boolean | string;
     questions: any;
 }
 
 const initialState: ContactUsPageState = {
-    loading: true,
-    error: null,
     questions: [],
 }
 
@@ -34,17 +30,8 @@ const contactUsReducer = createSlice({
     reducers:{},
     extraReducers: (builder) => {
         builder
-            .addCase(getContactUsPageQuestions.pending, (state) => {
-                state.loading = true;
-                state.error = null
-            })
             .addCase(getContactUsPageQuestions.fulfilled, (state, action) => {
-                state.loading = false;
                 state.questions = action.payload;
-            })
-            .addCase(getContactUsPageQuestions.rejected, (state, action) => {
-                state.loading = true;
-                state.error = action.error.message;
             })
     },
 })

@@ -12,7 +12,13 @@ import { compare, hash } from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 const app = express();
-app.use(cors());
+app.use(
+    cors({
+        origin: "http://localhost:3000",
+        credentials: true,
+        allowedHeaders: ["Content-Type", "Authorization"],
+    })
+);
 app.use(express.json());
 
 export const AppDataSource = new DataSource({
@@ -35,9 +41,12 @@ function broadcast(data: any) {
     });
 }
 
-const JWT_SECRET = process.env.JWT_SECRET || "supersecret";
+// 🔑 секреты для токенов
+const JWT_SECRET = process.env.JWT_SECRET || "supersecret"; // access
+const JWT_REFRESH_SECRET =
+    process.env.JWT_REFRESH_SECRET || "superrefresh"; // refresh
 
-// 🔹 middleware для проверки токена
+// Middleware для проверки accessToken
 function authMiddleware(req: any, res: any, next: any) {
     const authHeader = req.headers["authorization"];
     const token = authHeader && authHeader.split(" ")[1];
@@ -59,7 +68,7 @@ AppDataSource.initialize()
 
         const PORT = process.env.PORT || 5000;
 
-        // 🔹 health check
+        // 🔹 Health check
         app.get("/", (_req, res) => {
             res.send("✅ Server is running");
         });
@@ -74,18 +83,19 @@ AppDataSource.initialize()
         app.get("/product/:slug", async (req, res) => {
             const { slug } = req.params;
             const product = await productRepo.findOneBy({ slug });
-            if (!product) return res.status(404).json({ error: "Product not found" });
+            if (!product)
+                return res.status(404).json({ error: "Product not found" });
             res.json(product);
         });
 
         // 🔹 Reviews
         app.post("/reviews/:slug", authMiddleware, async (req, res) => {
             try {
-                const { rating, review } = req.body;
+                const { name, surname, email, review, rating } = req.body;
                 const { slug } = req.params;
 
-                if (!rating || !review) {
-                    return res.status(400).json({ error: "Rating and review are required" });
+                if (!review || !rating || !name || !email) {
+                    return res.status(400).json({ error: "Name, email, rating and review are required" });
                 }
 
                 const numRating = Math.round(Number(rating));
@@ -103,29 +113,55 @@ AppDataSource.initialize()
                     rating: numRating,
                     product,
                     user: { id: req?.user?.id },
+                    name: String(name).trim(),
+                    surname: surname ? String(surname).trim() : undefined,
+                    email: String(email).trim(),
                 };
+
 
                 const entity = reviewRepo.create(draft);
                 const saved = await reviewRepo.save(entity);
 
-                const { product: _omit, user: _omit2, ...payload } = saved;
-                return res.status(201).json(payload);
+                return res.status(201).json({
+                    id: saved.id,
+                    name,
+                    surname: surname ?? null,
+                    email,
+                    review: saved.content,
+                    rating: saved.rating,
+                    userId: req?.user?.id,
+                });
             } catch (e) {
                 console.error(e);
                 return res.status(500).json({ error: "Server error" });
             }
         });
 
+
         app.get("/reviews/:slug", async (req, res) => {
             try {
                 const { slug } = req.params;
                 const product = await productRepo.findOne({
                     where: { slug },
-                    relations: ["reviews"],
+                    relations: ["reviews", "reviews.user"],
                 });
 
-                if (!product) return res.status(404).json({ error: "Product not found" });
-                return res.json(product.reviews);
+                if (!product) {
+                    return res.status(404).json({ error: "Product not found" });
+                }
+
+                const reviews = product.reviews.map(r => ({
+                    id: r.id,
+                    content: r.content,
+                    rating: r.rating,
+                    userId: r.user?.id ?? null,
+                    name: r.name,
+                    surname: r.surname,
+                    email: r.email,
+                    createdAt: r.createdAt,
+                }));
+
+                return res.json(reviews);
             } catch (e) {
                 console.error(e);
                 return res.status(500).json({ error: "Server error" });
@@ -161,14 +197,20 @@ AppDataSource.initialize()
 
         app.post("/wishlist", authMiddleware, async (req, res) => {
             try {
-                const { id: rawId, title, slug, image, price, rating } = req.body || {};
+                const { id: rawId, title, slug, image, price, rating } =
+                req.body || {};
 
-                if (!title?.trim()) return res.status(400).json({ error: "Title is required" });
-                if (!slug?.trim()) return res.status(400).json({ error: "Slug is required" });
+                if (!title?.trim())
+                    return res.status(400).json({ error: "Title is required" });
+                if (!slug?.trim())
+                    return res.status(400).json({ error: "Slug is required" });
 
                 let item;
                 if (rawId) {
-                    item = await wishlistRepo.findOne({ where: { id: rawId, user: { id: req?.user?.id } }, relations: ["user"] });
+                    item = await wishlistRepo.findOne({
+                        where: { id: rawId, user: { id: req?.user?.id } },
+                        relations: ["user"],
+                    });
                     if (item) {
                         item.title = title.trim();
                         item.slug = slug.trim();
@@ -178,48 +220,79 @@ AppDataSource.initialize()
 
                         const updated = await wishlistRepo.save(item);
                         broadcast({ type: "wishlist_updated", item: updated });
-                        return res.status(200).json({ status: "updated", item: updated });
+                        return res
+                            .status(200)
+                            .json({ status: "updated", item: updated });
                     }
                 }
+
+                const normalizeNumber = (value: any): number | null => {
+                    if (
+                        value === undefined ||
+                        value === null ||
+                        value === ""
+                    )
+                        return null;
+
+                    const cleaned = String(value).replace(/[^0-9.]/g, "");
+                    const parsed = Number(cleaned);
+
+                    return isNaN(parsed) ? null : parsed;
+                };
 
                 const existing = await wishlistRepo.findOne({
                     where: { slug: slug.trim(), user: { id: req?.user?.id } },
                     relations: ["user"],
                 });
-                if (existing) return res.status(409).json({ error: "Item already exists in wishlist" });
+                if (existing)
+                    return res
+                        .status(409)
+                        .json({ error: "Item already exists in wishlist" });
+
+                const parsedPrice = normalizeNumber(price);
+                const parsedRating = normalizeNumber(rating);
 
                 item = wishlistRepo.create({
                     title: title.trim(),
                     slug: slug.trim(),
                     image: image ?? null,
-                    price: price ? Number(price) : null,
-                    rating: rating ? Number(rating) : null,
+                    price: parsedPrice,
+                    rating: parsedRating,
                     user: { id: req?.user?.id },
                 });
 
                 const created = await wishlistRepo.save(item);
                 broadcast({ type: "wishlist_created", item: created });
-                return res.status(201).json({ status: "created", item: created });
+                return res
+                    .status(201)
+                    .json({ status: "created", item: created });
             } catch (e) {
-                console.error("Wishlist error:", e);
-                return res.status(500).json({ error: "Server error" });
+                console.error("Wishlist error:", (e as any).message);
+                return res.status(500).json({
+                    error: "Server error",
+                    details: (e as any).message,
+                });
             }
         });
 
         app.delete("/wishlist", authMiddleware, async (req, res) => {
             try {
                 const { slug } = req.body || {};
-                if (!slug?.trim()) return res.status(400).json({ error: "Slug is required" });
+                if (!slug?.trim())
+                    return res.status(400).json({ error: "Slug is required" });
 
                 const item = await wishlistRepo.findOne({
                     where: { slug: slug.trim(), user: { id: req?.user?.id } },
                     relations: ["user"],
                 });
-                if (!item) return res.status(404).json({ error: "Item not found" });
+                if (!item)
+                    return res.status(404).json({ error: "Item not found" });
 
                 await wishlistRepo.remove(item);
                 broadcast({ type: "wishlist_deleted", slug: slug.trim() });
-                return res.status(200).json({ status: "deleted", slug: slug.trim() });
+                return res
+                    .status(200)
+                    .json({ status: "deleted", slug: slug.trim() });
             } catch (e) {
                 console.error("Wishlist delete error:", e);
                 return res.status(500).json({ error: "Server error" });
@@ -243,49 +316,106 @@ AppDataSource.initialize()
                 const { email, password, username } = req.body;
 
                 if (!email || !password || !username) {
-                    return res.status(400).json({ error: "Email, username and password are required" });
+                    return res
+                        .status(400)
+                        .json({ error: "Email, username and password are required" });
                 }
 
                 const existsEmail = await userRepo.findOne({ where: { email } });
-                if (existsEmail) return res.status(409).json({ error: "User with this email already exists" });
+                if (existsEmail)
+                    return res
+                        .status(409)
+                        .json({ error: "User with this email already exists" });
 
                 const existsUsername = await userRepo.findOne({ where: { username } });
-                if (existsUsername) return res.status(409).json({ error: "Username already taken" });
+                if (existsUsername)
+                    return res.status(409).json({ error: "Username already taken" });
 
                 const hashedPassword = await hash(password, 10);
 
-                const newUser = userRepo.create({ email, username, password: hashedPassword });
+                const newUser = userRepo.create({
+                    email,
+                    username,
+                    password: hashedPassword,
+                });
                 await userRepo.save(newUser);
 
-                res.status(201).json({ message: "User created successfully" });
+                res
+                    .status(201)
+                    .json({ message: "User created successfully" });
             } catch (e) {
                 console.error(e);
                 res.status(500).json({ error: "Server error" });
             }
         });
 
+        // login теперь отдаёт access + refresh
         app.post("/login", async (req, res) => {
             try {
                 const { email, password } = req.body;
-                if (!email || !password) return res.status(400).json({ error: "Email and password are required" });
+                if (!email || !password)
+                    return res
+                        .status(400)
+                        .json({ error: "Email and password are required" });
 
                 const user = await userRepo.findOne({ where: { email } });
-                if (!user) return res.status(401).json({ error: "Invalid credentials" });
+                if (!user)
+                    return res.status(401).json({ error: "Invalid credentials" });
 
                 const isPasswordValid = await compare(password, user.password);
-                if (!isPasswordValid) return res.status(401).json({ error: "Invalid credentials" });
+                if (!isPasswordValid)
+                    return res.status(401).json({ error: "Invalid credentials" });
 
-                const token = jwt.sign({ id: user.id, email: user.email, username: user.username }, JWT_SECRET, {
-                    expiresIn: "1h",
-                });
+                const accessToken = jwt.sign(
+                    { id: user.id, email: user.email, username: user.username },
+                    JWT_SECRET,
+                    { expiresIn: "15m" }
+                );
+
+                const refreshToken = jwt.sign(
+                    { id: user.id },
+                    JWT_REFRESH_SECRET,
+                    { expiresIn: "7d" }
+                );
 
                 res.json({
-                    token,
+                    accessToken,
+                    refreshToken,
+                    expiresIn: 15 * 60,
                     user: { id: user.id, email: user.email, username: user.username },
                 });
             } catch (e) {
                 console.error(e);
                 res.status(500).json({ error: "Server error" });
+            }
+        });
+
+        // refresh токен
+        app.post("/refresh", async (req, res) => {
+            const { refreshToken } = req.body;
+            if (!refreshToken)
+                return res
+                    .status(401)
+                    .json({ error: "No refresh token provided" });
+
+            try {
+                const decoded: any = jwt.verify(refreshToken, JWT_REFRESH_SECRET);
+
+                const newAccessToken = jwt.sign(
+                    { id: decoded.id, email: decoded.email, username: decoded.username },
+                    JWT_SECRET,
+                    { expiresIn: "15m" }
+                );
+
+                return res.json({
+                    accessToken: newAccessToken,
+                    refreshToken, // можно ротацию сделать
+                    expiresIn: 15 * 60,
+                });
+            } catch (e) {
+                return res
+                    .status(403)
+                    .json({ error: "Invalid or expired refresh token" });
             }
         });
 

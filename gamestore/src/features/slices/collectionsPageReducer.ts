@@ -8,13 +8,25 @@ interface CollectionsState {
     wishlistItems: CollectionProduct[];
 }
 
-export const getWishlistItems = createAsyncThunk(
+
+export const getWishlistItems = createAsyncThunk<CollectionProduct[], string>(
     'collections/getWishlistItems',
-    async () => {
+    async (token ) => {
         const res = await fetch("http://localhost:5000/wishlist", {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+            },
             cache: "no-store",
         },)
+
         const data = await res.json();
+
+        if (!res.ok) {
+            const errorData = (data && data.error) ? data.error : null;
+            return errorData;
+        }
+
         return data;
     }
 );

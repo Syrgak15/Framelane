@@ -2,6 +2,10 @@ export default function sortArray<T extends Record<string, any>>(
     arr: T[],
     order: "asc" | "desc" = "desc"
 ): T[] {
+    if (!Array.isArray(arr)) {
+        return [];
+    }
+
     return [...arr].sort((a, b) => {
         let valA: number;
         let valB: number;

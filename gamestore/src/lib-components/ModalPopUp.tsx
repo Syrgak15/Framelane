@@ -32,7 +32,7 @@ type FormValues = {
 };
 
 
-export default function BasicModal({slug} : {slug: string}) {
+export default function BasicModal({slug, token} : {slug: string, token: string}) {
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -46,7 +46,7 @@ export default function BasicModal({slug} : {slug: string}) {
 
     const onSubmit = async(data: FormValues) => {
         setFormSubmitted(true);
-        await dispatch(postProductReview({slug, data}))
+        await dispatch(postProductReview({slug, data, token}))
         reset({
             rating: null,
             name: '',

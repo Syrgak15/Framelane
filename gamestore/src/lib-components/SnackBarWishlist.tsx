@@ -6,24 +6,38 @@ import { addProductToWishlist, deleteProductFromWishlist } from '../features/sli
 import { useAppDispatch } from "../store/hooks";
 import { useEffect, useCallback } from "react";
 import { WishlistItem } from "../floating-widgets/wishlists/WishlistClientComponent";
+import { Product } from "../../src/app/product/[slug]/ProductPageClientComponent";
 
 type Props = {
-    data: WishlistItem;
+    data: Product;
     wishlistItems: WishlistItem[];
+    token: string;
 };
 
-export default function AutoHideSnackbar({ data, wishlistItems }: Props) {
+type HandleClickProps = {
+    token: string;
+    item: Product;
+    slug: string;
+};
+
+export default function AutoHideSnackbar({ data, wishlistItems, token }: Props) {
     const [open, setOpen] = React.useState(false);
     const [inWishlist, setInWishlist] = React.useState(false);
-    const [product, setProduct] = React.useState<WishlistItem | null>(data);
+    const [product, setProduct] = React.useState<Product | null>(data);
     const dispatch = useAppDispatch();
 
-    const addToWishlist = useCallback((item: WishlistItem) => {
-        dispatch(addProductToWishlist({ data: item }));
+    const addToWishlist = useCallback((item: Product, token: string) => {
+        dispatch(addProductToWishlist({ data: {
+                title: item.title,
+                slug: item.slug,
+                image: item.image ?? null,
+                price: item.price != null ? String(item.price) : null,
+                rating: item.rating ?? null
+            }, token }));
     }, [dispatch]);
 
-    const deleteFromWishlist = useCallback((item: WishlistItem) => {
-        dispatch(deleteProductFromWishlist({ data: item }));
+    const deleteFromWishlist = useCallback(({ slug, token }: { slug: string; token: string }) => {
+        dispatch(deleteProductFromWishlist({ slug, token }));
     }, [dispatch]);
 
     useEffect(() => {
@@ -38,9 +52,12 @@ export default function AutoHideSnackbar({ data, wishlistItems }: Props) {
             const message = JSON.parse(e.data as string);
 
             if (message.type === "wishlist_created") {
-                setProduct(message.item as WishlistItem);
+                setProduct(message.item);
             }
             if (message.type === "wishlist_cleared") {
+                setProduct(null);
+            }
+            if (message.type === "wishlist_item_removed") {
                 setProduct(null);
             }
         };
@@ -48,15 +65,16 @@ export default function AutoHideSnackbar({ data, wishlistItems }: Props) {
         return () => ws.close();
     }, []);
 
-    const handleClick = (item: WishlistItem | null) => {
+    const handleClick = ({ item, token, slug }: HandleClickProps) => {
         setOpen(true);
 
         const exists = wishlistItems.some(p => p.slug === item.slug);
+
         if (exists) {
-            deleteFromWishlist(item);
+            deleteFromWishlist({ slug, token });
             setInWishlist(false);
         } else {
-            addToWishlist(item);
+            addToWishlist(item, token);
             setInWishlist(true);
         }
     };
@@ -73,7 +91,6 @@ export default function AutoHideSnackbar({ data, wishlistItems }: Props) {
         <div>
             <Button
                 disableRipple
-                disabled={!product}
                 sx={{
                     border: "1px solid #3d6da3",
                     borderRadius: "40px",
@@ -88,21 +105,22 @@ export default function AutoHideSnackbar({ data, wishlistItems }: Props) {
                         color: "#3d6da3",
                     })
                 }}
-                onClick={() => handleClick(product)}
+                onClick={() => handleClick({ item: product, token, slug: product.slug })}
                 variant="outlined"
             >
                 <FavoriteIcon />
             </Button>
 
             <Snackbar
+                sx={{zIndex: '100', marginTop: '55px'}}
                 open={open}
-                autoHideDuration={3000}
+                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                autoHideDuration={2000}
                 onClose={handleClose}
-                message={inWishlist ? (
-                    `You've added ${product?.title} to your Wishlist🖤`
-                ) : (
-                    `You've removed ${product?.title} from your Wishlist`
-                )}
+                message={inWishlist
+                    ? `You've added ${product?.title} to your Wishlist🖤`
+                    : `You've removed ${product?.title} from your Wishlist`
+                }
             />
         </div>
     );
