@@ -7,7 +7,6 @@ import { headerPageConfig } from '../../config/pages.config';
 import { productConfig } from '../../config/pages.config';
 
 type Reviews = {
-    product: {
         id: number;
         title: string;
         slug: string;
@@ -25,7 +24,7 @@ type Reviews = {
             returns: string;
             international: string;
         };
-    };
+
 }
 
 type Props = {
@@ -35,7 +34,7 @@ type Props = {
 const MainPageClient: React.FC<Props> = ({glassesData}) => {
 
     const filteredGlasses = glassesData;
-
+    console.log(filteredGlasses[0]);
     return <>
         <div className="products-wrapper">
             <div className="products-heading">
@@ -47,8 +46,8 @@ const MainPageClient: React.FC<Props> = ({glassesData}) => {
             {filteredGlasses && (
                 <ul className="products-list">
                     {filteredGlasses.map((glass, index) => (
-                        <Link href={`/${productConfig.PRODUCT}/${glass.product.slug}`} key={index}>
-                            <MediaCard key={index} image={glass.product.image} title={glass.product.title} price={glass.product.price}/>
+                        <Link href={`/${productConfig.PRODUCT}/${glass.slug}`} key={index}>
+                            <MediaCard key={index} image={glass.image} title={glass.title} price={glass.price}/>
                         </Link>
                     ))}
                 </ul>

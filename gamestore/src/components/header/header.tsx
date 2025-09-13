@@ -6,7 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import customerIcon from '../../../public/icons/customer.svg';
 import faveIcon from '../../../public/icons/faveicon.svg';
-import shoppingIcon from '../../../public/icons/shopping.svg';
+import shoppingIcon from '../../public/icons/shopping.svg';
 import {creatingPages, headerPageConfig} from '../../config/pages.config';
 import { footerPageConfig } from '../../config/pages.config';
 import {useSession} from "next-auth/react";
