@@ -10,6 +10,8 @@ import { Wishlist } from "./entities/Wishlist";
 import { Users } from "./entities/Users";
 import { compare, hash } from "bcryptjs";
 import jwt from "jsonwebtoken";
+import * as dotenv from "dotenv";
+dotenv.config();
 
 const app = express();
 app.use(
