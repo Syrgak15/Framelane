@@ -75,7 +75,9 @@ async function getWishlistData() {
 
 export default async function ProductPage({ params }) {
     const session = await getServerSession(authOptions)
-
+    if (!session?.user?.accessToken) {
+        return <div>Пожалуйста, войдите, чтобы просмотреть список желаемого</div>;
+    }
     const {slug} = await params;
 
     const productInfoData = await getProduct(slug);
@@ -112,6 +114,6 @@ export default async function ProductPage({ params }) {
 
     return <>
         <ProductPageClientComponent productInfo={productInfoData} wishlistItems={wishlistItems} token={session!.user?.accessToken ?? ""}/>
-        <ReviewsWidget reviews={preparedSlides} slug={slug} token={session!.user?.accessToken ?? ""}/>
+        <ReviewsWidget reviews={preparedSlides} slug={slug} token={session!.user?.accessToken }/>
     </>
 }

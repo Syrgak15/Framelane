@@ -43,9 +43,11 @@ async function getFavoriteProducts (){
 
 export default async function CollectionsServerComponent () {
     const session = await getServerSession(authOptions)
-
+    if (!session?.user?.accessToken) {
+        return <div>Пожалуйста, войдите, чтобы просмотреть список желаемого</div>;
+    }
     const getCollectionsData = await getCollectionsPageData();
     const getWishlistItems = await getFavoriteProducts();
 
-    return <CollectionsClientComponent initialItems={getWishlistItems} posts={getCollectionsData} token={session!.user.accessToken ?? ""} />
+    return <CollectionsClientComponent initialItems={getWishlistItems} posts={getCollectionsData} token={session!.user.accessToken } />
 }

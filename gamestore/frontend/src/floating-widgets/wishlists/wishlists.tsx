@@ -26,8 +26,10 @@ async function getWishlistData() {
 
 export default async function WishlistServerComponent() {
     const session = await getServerSession(authOptions)
-
+    if (!session?.user?.accessToken) {
+        return <div>Пожалуйста, войдите, чтобы просмотреть список желаемого</div>;
+    }
     const wishlistItem = await getWishlistData();
 
-    return <WishlistClientComponent initialItems={wishlistItem} token={session?.user?.accessToken ?? ""} />;
+    return <WishlistClientComponent initialItems={wishlistItem} token={session?.user?.accessToken} />;
 }
