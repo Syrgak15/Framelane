@@ -33,7 +33,7 @@ export default function RootLayout({
           <Header/>
           {children}
           <Reviews/>
-          <Wishlists/>
+          {/*<Wishlists/>*/}
           <Newsletter/>
           <Footer/>
         </ReduxProvider>
