@@ -64,7 +64,7 @@ export default function CollectionsPage({
 
     useEffect(() => {
 
-        const ws = new WebSocket(`ws://${process.env.NEXTAUTH_URL}`);
+        const ws = new WebSocket(`ws://${process.env.API_URL}`);
 
         ws.onmessage = (e: MessageEvent) => {
             const message = JSON.parse(e.data as string);

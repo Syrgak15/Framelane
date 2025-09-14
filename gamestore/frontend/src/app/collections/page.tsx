@@ -22,7 +22,7 @@ async function getFavoriteProducts (){
     const session = await getServerSession(authOptions)
 
     try {
-        const req = await fetch(`${process.env.NEXTAUTH_URL}/wishlist`, {
+        const req = await fetch(`${process.env.API_URL}/wishlist`, {
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${session!.user.accessToken}`,
