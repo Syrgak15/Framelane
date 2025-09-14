@@ -12,7 +12,7 @@ interface CollectionsState {
 export const getWishlistItems = createAsyncThunk<CollectionProduct[], string>(
     'collections/getWishlistItems',
     async (token ) => {
-        const res = await fetch("http://localhost:5000/wishlist", {
+        const res = await fetch(`${process.env.NEXTAUTH_URL}/wishlist`, {
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`,

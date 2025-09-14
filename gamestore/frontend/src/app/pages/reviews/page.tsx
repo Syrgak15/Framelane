@@ -2,7 +2,7 @@ import ReviewsPageClientComponent from "./ReviewsPageClientComponent";
 import {Reviews} from "../../../floating-widgets/reviews/reviews";
 
 async function getReviews(): Promise<Reviews[]> {
-    const res = await fetch(`http://localhost:5000/reviews?limit=50`, {
+    const res = await fetch(`${process.env.NEXTAUTH_URL}/reviews?limit=50`, {
         cache: "no-store",
     });
 

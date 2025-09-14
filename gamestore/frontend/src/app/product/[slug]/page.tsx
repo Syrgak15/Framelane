@@ -24,7 +24,7 @@ type Review = {
 
 async function getProduct(slug: string): Promise<Product> {
 
-    const res = await fetch(`http://localhost:5000/product/${slug}`, {
+    const res = await fetch(`${process.env.NEXTAUTH_URL}/product/${slug}`, {
         cache: "no-store",
     });
 
@@ -38,7 +38,7 @@ async function getProduct(slug: string): Promise<Product> {
 
 async function getReviews(slug: string): Promise<Review[]> {
 
-    const res = await fetch(`http://localhost:5000/reviews/${slug}`, {
+    const res = await fetch(`${process.env.NEXTAUTH_URL}/reviews/${slug}`, {
         headers: {
             "Content-Type": "application/json",
         },
@@ -57,7 +57,7 @@ async function getWishlistData() {
     if (!session?.user?.accessToken) {
         return [];
     }
-    const res = await fetch(`http://localhost:5000/wishlist`, {
+    const res = await fetch(`${process.env.NEXTAUTH_URL}/wishlist`, {
         headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${session!.user?.accessToken}`
@@ -111,7 +111,7 @@ export default async function ProductPage({ params }) {
     });
 
     return <>
-        <ProductPageClientComponent productInfo={productInfoData} wishlistItems={wishlistItems} token={session!.user?.accessToken}/>
-        <ReviewsWidget reviews={preparedSlides} slug={slug} token={session!.user?.accessToken}/>
+        <ProductPageClientComponent productInfo={productInfoData} wishlistItems={wishlistItems} token={session!.user?.accessToken ?? ""}/>
+        <ReviewsWidget reviews={preparedSlides} slug={slug} token={session!.user?.accessToken ?? ""}/>
     </>
 }

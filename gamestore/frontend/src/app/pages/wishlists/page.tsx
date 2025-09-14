@@ -6,7 +6,7 @@ async function getWishlistData() {
     const session = await getServerSession(authOptions)
 
     try{
-        const res = await fetch(`http://localhost:5000/wishlist`, {
+        const res = await fetch(`${process.env.NEXTAUTH_URL}/wishlist`, {
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${session!.user?.accessToken}`
@@ -28,5 +28,5 @@ export default async function WishlistPageServerComponent () {
 
     const wishlistPageData = await getWishlistData();
 
-    return <WishlistPageClientComponent wishlistPageData={wishlistPageData} token={session!.user.accessToken} />
+    return <WishlistPageClientComponent wishlistPageData={wishlistPageData} token={session!.user.accessToken ?? ""} />
 }

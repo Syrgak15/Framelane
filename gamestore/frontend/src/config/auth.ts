@@ -16,7 +16,7 @@ export const authOptions: NextAuthOptions = {
             async authorize(credentials) {
                 if (!credentials?.email || !credentials?.password) return null;
                 try {
-                    const res = await fetch("http://localhost:5000/login", {
+                    const res = await fetch(`${process.env.NEXTAUTH_URL}/login`, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({
@@ -60,7 +60,7 @@ export const authOptions: NextAuthOptions = {
             }
 
             try {
-                const res = await fetch("http://localhost:5000/refresh", {
+                const res = await fetch(`${process.env.NEXTAUTH_URL}/refresh`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ refreshToken: token.refreshToken }),

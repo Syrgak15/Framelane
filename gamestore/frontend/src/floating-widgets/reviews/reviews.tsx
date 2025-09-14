@@ -32,7 +32,7 @@ export type Reviews = {
 
 
 async function getReviews(): Promise<Reviews[]> {
-    const res = await fetch(`http://localhost:5000/reviews?limit=20`, {
+    const res = await fetch(`${process.env.NEXTAUTH_URL}/reviews?limit=20`, {
         cache: "no-store",
     });
 

@@ -64,7 +64,7 @@ const initialState: ProductPageState = {
 export const fetchProductBySlug = createAsyncThunk<Product, string>(
     'fetchBySlug',
     async (slug) => {
-        const req = await fetch(`http://localhost:5000/products/${slug}`);
+        const req = await fetch(`${process.env.NEXTAUTH_URL}/products/${slug}`);
         if (!req.ok) throw new Error(`Product not found: ${req.status}`);
         const res = await req.json();
         return res;
@@ -75,7 +75,7 @@ export const postProductReview = createAsyncThunk<ProductReview, PostProductRevi
     'product/postProductReview',
     async ({ slug, data, token }, { rejectWithValue }) => {
         try {
-            const res = await fetch(`http://localhost:5000/reviews/${slug}`, {
+            const res = await fetch(`${process.env.NEXTAUTH_URL}/reviews/${slug}`, {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -104,7 +104,7 @@ export const addProductToWishlist = createAsyncThunk<
     "product/addProductToWishlist",
     async ({ data, token }, { rejectWithValue }) => {
         try {
-            const res = await fetch("http://localhost:5000/wishlist", {
+            const res = await fetch(`${process.env.NEXTAUTH_URL}/wishlist`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -136,7 +136,7 @@ export const deleteProductFromWishlist = createAsyncThunk<
     "product/deleteProductFromWishlist",
     async ({ slug, token }, { rejectWithValue }) => {
         try {
-            const res = await fetch("http://localhost:5000/wishlist", {
+            const res = await fetch(`${process.env.NEXTAUTH_URL}/wishlist`, {
                 method: "DELETE",
                 headers: {
                     "Authorization": `Bearer ${token}`,
@@ -164,7 +164,7 @@ export const deleteAllProductFromWishlist = createAsyncThunk<
     "product/deleteAllProductFromWishlist",
     async ({ token  }, { rejectWithValue }) => {
         try {
-            const res = await fetch("http://localhost:5000/wishlist/all", {
+            const res = await fetch(`${process.env.NEXTAUTH_URL}/wishlist/all`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
