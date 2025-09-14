@@ -13,7 +13,7 @@ export default function AccordionExpandIcon({title}: { title: string }) {
         <Accordion
             expanded={false}
             sx={{
-                width: '200px',
+                width: '201px',
                 boxShadow: 'unset',
                 margin: 0,
                 padding: 0,
