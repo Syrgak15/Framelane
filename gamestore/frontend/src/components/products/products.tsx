@@ -3,7 +3,7 @@ import MainPageClient from "./MainPageClient";
 
 
 async function getCollectionsData() {
-    const res = await fetch(`${process.env.API_URL}/products?limit=4`, {
+    const res = await fetch(`https://framelane-2.onrender.com/products?limit=4`, {
         cache: "no-store",
     });
 
