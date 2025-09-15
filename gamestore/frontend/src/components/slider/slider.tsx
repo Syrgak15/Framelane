@@ -2,7 +2,7 @@ import SliderClientComponent from "./SliderClientComponent";
 
 async function getSliderReviews () {
 
-    const res = await fetch(`${process.env.API_URL}/reviews?limit=15`, {
+    const res = await fetch(`https://framelane-2.onrender.com/reviews?limit=15`, {
         headers: {
             "Content-Type": "application/json",
         },
@@ -46,6 +46,6 @@ export default async function SliderServerComponent () {
             content: item.content || randomReview,
         };
     });
-
+    console.log(preparedSlides)
     return <SliderClientComponent slides={preparedSlides} />;
 }

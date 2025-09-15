@@ -32,7 +32,7 @@ export type Reviews = {
 
 
 async function getReviews(): Promise<Reviews[]> {
-    const res = await fetch(`${process.env.API_URL}/reviews?limit=20`, {
+    const res = await fetch(`https://framelane-2.onrender.com/reviews?limit=20`, {
         cache: "no-store",
     });
 

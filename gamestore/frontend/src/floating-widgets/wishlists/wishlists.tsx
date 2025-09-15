@@ -4,7 +4,7 @@ import { getServerSession } from "next-auth";
 
 async function getWishlistData(token: string) {
     try {
-        const res = await fetch(`${process.env.API_URL}/wishlist`, {
+        const res = await fetch(`https://framelane-2.onrender.com/wishlist`, {
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`,

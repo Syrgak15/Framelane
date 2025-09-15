@@ -15,7 +15,6 @@ class ContactUsConfig {
 class FooterPagesConfig {
     WISHLISTS = "wishlists";
     REVIEWS = "reviews";
-    DELIVERY = "delivery";
 }
 
 class CreatingPages {
