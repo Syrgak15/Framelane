@@ -6,7 +6,7 @@ import { authOptions } from "../../config/auth";
 async function getCollectionsPageData () {
     const session = await getServerSession(authOptions)
     try {
-        const req = await fetch(`${process.env.NEXTAUTH_URL}/products/limit?=30`, {cache: "no-store"});
+        const req = await fetch(`https://framelane-2.onrender.com/products/limit?=30`, {cache: "no-store"});
         if(!req.ok) {
             throw new Error();
         }
