@@ -57,9 +57,9 @@ const Header: React.FC = () => {
                 ))}
 
                 <div className="header-nav nav-icons">
-                    {/*<Link className="header-link" href={`/${creatingPages.PROFILE}`}>*/}
-                    {/*    <Image className="header-nav__icon" src={customerIcon} alt="Customer" />*/}
-                    {/*</Link>*/}
+                    <Link className="header-link" href={`/${creatingPages.PROFILE}`}>
+                        <Image className="header-nav__icon" src={customerIcon} alt="Customer" />
+                    </Link>
                     <Link className="header-link" href={`/pages/${footerPageConfig.WISHLISTS}`}>
                         <Image className="header-nav__icon" src={faveIcon} alt="Wishlist" />
                     </Link>

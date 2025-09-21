@@ -1,33 +1,14 @@
 'use client'
-import React, {} from 'react';
+
 import {Swiper, SwiperSlide} from 'swiper/react';
 import {EffectFade, Autoplay} from 'swiper/modules';
 import Image from 'next/image'
 import 'swiper/css';
 import 'swiper/css/effect-fade';
 import '@/components/banner/banner.css';
-import {useSession} from "next-auth/react";
+import slides from "../../data/main-page-banner.json";
 
-type Slides = {
-    image: string;
-}
-
-const Banner: React.FC = () => {
-
-    const session = useSession();
-
-    const slides : Slides[] = [
-        {
-            image: '/background/banner_bg-zero.webp',
-        },
-        {
-            image: '/background/banner_bg-first.webp',
-        },
-        {
-            image: '/background/banner_bg-second.webp',
-        },
-    ]
-
+export default function Banner() {
 
     return (
         <>
@@ -38,25 +19,26 @@ const Banner: React.FC = () => {
                 pagination={{
                     clickable: true,
                 }}
-                autoplay={{delay: 2500,
+                autoplay={{
+                    delay: 2500,
                     disableOnInteraction: false,
                     pauseOnMouseEnter: false,
-                    }}
+                }}
                 loop={true}
                 fadeEffect={{crossFade: true}}
             >
                 {Array.isArray(slides) && (slides.map((slide, i) => (
-                        <SwiperSlide key={i}>
-                            <div className="banner-image">
-                                <Image
-                                    src={slide.image}
-                                    alt={'Banner'}
-                                    width={2000}
-                                    height={900}
-                                />
-                            </div>
-                        </SwiperSlide>
-                    )))}
+                    <SwiperSlide key={i}>
+                        <div className="banner-image">
+                            <Image
+                                src={slide.image}
+                                alt={'Banner'}
+                                width={2000}
+                                height={900}
+                            />
+                        </div>
+                    </SwiperSlide>
+                )))}
             </Swiper>
 
             <div className="banner-slogan">
@@ -67,10 +49,7 @@ const Banner: React.FC = () => {
                     </p>
                 </div>
             </div>
-
         </>
-
     );
 }
 
-export default Banner;

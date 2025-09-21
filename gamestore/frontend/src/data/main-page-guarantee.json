@@ -1,0 +1,17 @@
+[
+  {
+    "title": "Verified quality",
+    "subtitle": "Every product is hand-checked before shipping",
+    "icon": "/icons/verified-quality.svg"
+  },
+  {
+    "title": "Customer reviews",
+    "subtitle": "Over 500 satisfied customers with real feedback",
+    "icon": "/icons/customer-reviews.svg"
+  },
+  {
+    "title": "Return guarantee",
+    "subtitle": "Hassle-free 14-day return policy",
+    "icon": "/icons/return-guarantee.svg"
+  }
+]

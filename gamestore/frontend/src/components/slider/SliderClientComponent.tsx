@@ -13,19 +13,11 @@ import { productConfig } from '../../config/pages.config';
 import uniqueBy from "../../utils/UniqueBy"
 import Link from "next/link";
 import StarRateRoundedIcon from "@mui/icons-material/StarRateRounded";
+import {GlassesSlider} from "../../config/types"
 
-type SliderProps = {
-    image: string;
-    product: any;
-    review: string;
-    name: string;
-    email?: string;
-}
-
-export default function Slider({slides} : {slides: SliderProps[]}) {
+export default function Slider({slides} : {slides: GlassesSlider[]}) {
 
     const uniqueSlides = uniqueBy(slides,["email", "review", "product.image", "name"])
-    console.log(uniqueSlides)
     return (
         <div className="slider-wrapper">
             <div className="slider-wrapper__title">

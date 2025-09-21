@@ -1,24 +1,8 @@
-import ReviewsPageClientComponent from "./ReviewsPageClientComponent";
-import {Reviews} from "../../../floating-widgets/reviews/reviews";
+import {GlassesSlider} from "../config/types"
 
-async function getReviews(): Promise<Reviews[]> {
-    const res = await fetch(`https://framelane-2.onrender.com/reviews?limit=50`, {
-        cache: "no-store",
-    });
-
-    if (!res.ok) {
-        return [];
-    }
-
-    return res.json();
-}
-
-
-export default async function ReviewsPageServerComponent () {
-
-    const getAllReviews = await getReviews();
-
+function FakerReviews({slides}: {slides: GlassesSlider[]}) {
     const fakeNames = ["Emma", "Liam", "Olivia", "Noah", "Sophia", "James", "Isabella", "Ethan"];
+    const fakeSurnames = ["Johnson", "Smith", "Brown", "Taylor", "Davis", "Wilson", "Miller", "Anderson"];
     const fakeReviews = [
         "Absolutely love this product! The quality exceeded my expectations.",
         "Great value for the price. Will definitely order again!",
@@ -28,20 +12,23 @@ export default async function ReviewsPageServerComponent () {
         "Good quality overall, though packaging could be better.",
     ];
 
-    const preparedSlides = getAllReviews.map((item, index) => {
+    const preparedSlides = slides?.map((item, index) => {
         const randomName = fakeNames[index % fakeNames.length];
+        const randomSurname = fakeSurnames[index % fakeSurnames.length];
         const randomReview = fakeReviews[index % fakeReviews.length];
 
         return {
             ...item,
             name: item.name && item.name !== "Anonymous" ? item.name : randomName,
+            surname: item.surname || randomSurname,
             email:
                 item.email && item.email !== "unknown@example.com"
                     ? item.email
-                    : `${randomName.toLowerCase()}@example.com`,
+                    : `${randomName.toLowerCase()}.${randomSurname.toLowerCase()}@example.com`,
             content: item.content || randomReview,
         };
     });
 
-    return <ReviewsPageClientComponent initialReviews={preparedSlides} />
+    return preparedSlides;
 }
+export default FakerReviews;

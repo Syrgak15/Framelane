@@ -1,25 +1,8 @@
 import React from 'react';
 import '@/components/guarantee/guarantee.css'
+import reasons from "../../data/main-page-guarantee.json";
 
-const Guarantee:React.FC = () => {
-
-    const reasons = [
-        {
-            title: 'Verified quality',
-            subtitle: 'Every product is hand-checked before shipping',
-            icon: '/icons/verified-quality.svg',
-        },
-        {
-            title: 'Customer reviews',
-            subtitle: 'Over 500 satisfied customers with real feedback',
-            icon: '/icons/customer-reviews.svg',
-        },
-        {
-            title: 'Return guarantee',
-            subtitle: 'Hassle-free 14-day return policy',
-            icon: '/icons/return-guarantee.svg',
-        },
-    ];
+export default function Guarantee(){
     return (
         <div className="guarantee">
             <div className="guarantee-wrapper__title">
@@ -48,5 +31,3 @@ const Guarantee:React.FC = () => {
 
     );
 };
-
-export default Guarantee;

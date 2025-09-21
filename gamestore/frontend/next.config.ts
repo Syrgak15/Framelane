@@ -4,6 +4,7 @@ const nextConfig: NextConfig = {
     images: {
         domains: ["dayalopticalsindia.com"],
     },
+
     transpilePackages: [],
     webpack: (config) => {
         config.externals = config.externals || {};

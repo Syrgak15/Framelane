@@ -26,12 +26,11 @@ async function getWishlistData(token: string) {
 
 export default async function WishlistServerComponent() {
     const session = await getServerSession(authOptions);
-
+    console.log(session)
     if (!session?.user?.accessToken) {
         return <div>Пожалуйста, войдите, чтобы просмотреть список желаемого</div>;
     }
 
-    // ✅ передаём токен
     const wishlistItem = await getWishlistData(session.user.accessToken);
 
     return (

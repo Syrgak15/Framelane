@@ -3,7 +3,7 @@ import '@/components/footer/footer.css'
 import Link from 'next/link';
 import {footerPageConfig, contactUsConfig} from "../../config/pages.config";
 
-const Footer:React.FC = () => {
+export default function Footer() {
 
     const footerPageEntries = Object.entries(footerPageConfig);
 
@@ -31,5 +31,3 @@ const Footer:React.FC = () => {
 
     );
 };
-
-export default Footer;

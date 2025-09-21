@@ -44,7 +44,7 @@ export default function Wishlists({initialItems, token} : {initialItems : Wishli
 
     useEffect(() => {
 
-        const ws = new WebSocket(`ws://${process.env.API_URL}`);
+        const ws = new WebSocket(`ws://https://framelane-2.onrender.com/`);
 
         ws.onmessage = (e: MessageEvent) => {
             const message = JSON.parse(e.data as string);

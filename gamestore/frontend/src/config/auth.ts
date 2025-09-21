@@ -4,10 +4,10 @@ import Credentials from "next-auth/providers/credentials";
 
 export const authOptions: NextAuthOptions = {
     providers: [
-        // GoogleProvider({
-        //     clientId: process.env.GOOGLE_CLIENT_ID!,
-        //     clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-        // }),
+        GoogleProvider({
+            clientId: process.env.GOOGLE_CLIENT_ID!,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+        }),
         Credentials({
             credentials: {
                 email: { label: "Email", type: "email" },
@@ -16,7 +16,7 @@ export const authOptions: NextAuthOptions = {
             async authorize(credentials) {
                 if (!credentials?.email || !credentials?.password) return null;
                 try {
-                    const res = await fetch(`${process.env.API_URL}/login`, {
+                    const res = await fetch(`https://framelane-2.onrender.com/login`, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({
@@ -29,14 +29,22 @@ export const authOptions: NextAuthOptions = {
 
                     const data = await res.json();
 
-                    return {
+                    const user = {
                         id: data.user.id,
                         email: data.user.email,
                         username: data.user.username,
                         accessToken: data.accessToken,
                         refreshToken: data.refreshToken,
                         expiresIn: data.expiresIn,
-                    };
+                    }
+
+                    console.log(user)
+                    if(user) {
+                        return user;
+                    } else {
+                        return null;
+                    }
+
                 } catch (err) {
                     console.error("Authorize error:", err);
                     return null;
@@ -60,7 +68,7 @@ export const authOptions: NextAuthOptions = {
             }
 
             try {
-                const res = await fetch(`${process.env.NEXTAUTH_URL}/refresh`, {
+                const res = await fetch(`https://framelane-2.onrender.com/refresh`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ refreshToken: token.refreshToken }),

@@ -1,7 +1,7 @@
 import React from 'react';
 import '@/components/scroller/scroller.css'
 
-const Scroller: React.FC = () => {
+export default function Scroller() {
 
     const scrollingEl = [
         'CONTACT OWNER',
@@ -23,5 +23,3 @@ const Scroller: React.FC = () => {
 
     );
 };
-
-export default Scroller;

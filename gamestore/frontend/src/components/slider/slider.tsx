@@ -1,4 +1,5 @@
 import SliderClientComponent from "./SliderClientComponent";
+import FakerReviews from "../../utils/FakerReviews";
 
 async function getSliderReviews () {
 
@@ -10,42 +11,17 @@ async function getSliderReviews () {
     })
 
     if(!res.ok) {
-        return [];
+        return null;
     }
-    return await res.json();
+
+    const data = await res.json();
+    return data;
 }
 
 export default async function SliderServerComponent () {
 
     const slidesData = await getSliderReviews();
+    const preparedSlides = FakerReviews({slides: slidesData});
 
-    const fakeNames = ["Emma", "Liam", "Olivia", "Noah", "Sophia", "James", "Isabella", "Ethan"];
-    const fakeSurnames = ["Johnson", "Smith", "Brown", "Taylor", "Davis", "Wilson", "Miller", "Anderson"];
-    const fakeReviews = [
-        "Absolutely love this product! The quality exceeded my expectations.",
-        "Great value for the price. Will definitely order again!",
-        "The design is sleek and stylish — highly recommend.",
-        "Delivery was fast and the product works perfectly.",
-        "Amazing! I got so many compliments already.",
-        "Good quality overall, though packaging could be better.",
-    ];
-
-    const preparedSlides = slidesData.map((item, index) => {
-        const randomName = fakeNames[index % fakeNames.length];
-        const randomSurname = fakeSurnames[index % fakeSurnames.length];
-        const randomReview = fakeReviews[index % fakeReviews.length];
-
-        return {
-            ...item,
-            name: item.name && item.name !== "Anonymous" ? item.name : randomName,
-            surname: item.surname || randomSurname,
-            email:
-                item.email && item.email !== "unknown@example.com"
-                    ? item.email
-                    : `${randomName.toLowerCase()}.${randomSurname.toLowerCase()}@example.com`,
-            content: item.content || randomReview,
-        };
-    });
-    console.log(preparedSlides)
     return <SliderClientComponent slides={preparedSlides} />;
 }
