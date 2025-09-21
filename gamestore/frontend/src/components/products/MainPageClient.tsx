@@ -20,8 +20,8 @@ export default function MainPageClient({glassesData}: {glassesData: GlassesSlide
             {glassesData && (
                 <ul className="products-list">
                     {glassesData.map((glass, index) => (
-                        <Link href={`/${productConfig.PRODUCT}/${glass.slug}`} key={index}>
-                            <MediaCard key={index} image={glass.image} title={glass.title} price={glass.price}/>
+                        <Link href={`/${productConfig.PRODUCT}/${glass.product.slug}`} key={index}>
+                            <MediaCard key={index} image={glass.product.image} title={glass.product.title} price={glass.product.price}/>
                         </Link>
                     ))}
                 </ul>

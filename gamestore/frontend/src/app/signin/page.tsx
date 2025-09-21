@@ -25,9 +25,9 @@ export default function SignInPage () {
                     </Link>
                 </div>
                 <div className="divider">or</div>
-                <div className="google-btn">
-                    <GoogleButton/>
-                </div>
+                {/*<div className="google-btn">*/}
+                {/*    <GoogleButton/>*/}
+                {/*</div>*/}
             </div>
         </div>
     );
