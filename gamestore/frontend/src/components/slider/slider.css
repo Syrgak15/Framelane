@@ -33,11 +33,15 @@
     border: 1px solid #ddd;
     border-radius: 15px !important;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-    max-width: 350px;
     width: 100%;
+    max-width: 350px;
     text-align: center;
-    min-height: 550px;
+    min-height: clamp(320px, 60vh, 550px); /* гибкая высота */
     margin: 0 auto;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 .swiper-slide {
     display: flex;
@@ -65,4 +69,28 @@
 }
 .star.is-on {
     color: #000;
+}
+/* Планшеты */
+@media (max-width: 1024px) {
+    .slider-wrapper__card {
+        max-width: 300px;
+        min-height: clamp(280px, 55vh, 500px);
+    }
+}
+
+/* Смартфоны */
+@media (max-width: 768px) {
+    .slider-wrapper__card {
+        max-width: 90%;   /* занимает почти всю ширину */
+        min-height: clamp(250px, 50vh, 450px);
+    }
+}
+
+/* Очень маленькие экраны */
+@media (max-width: 480px) {
+    .slider-wrapper__card {
+        max-width: 100%;   /* на мобилке растягивается */
+        min-height: auto;  /* убираем фиксированную высоту */
+        padding: 10px;
+    }
 }

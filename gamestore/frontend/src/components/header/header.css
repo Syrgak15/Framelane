@@ -1,8 +1,18 @@
 .header {
-    position: sticky;
+    position: fixed;
     top: 0;
-    z-index: 1000000;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background-color: #FFFFFF;
+    transition: transform 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
+
+.header--hidden {
+    transform: translateY(-100%);
+}
+
 .header-wrapper {
     display: flex;
     flex-direction: row;
@@ -12,28 +22,33 @@
     max-width: 1800px;
     margin: 0 auto;
     height: 70px;
-    padding-bottom: 15px;
+    padding: 0 20px;
+    flex-wrap: wrap; /* чтобы элементы переносились */
 }
+
 .header-link {
     display: flex;
     text-decoration: none;
     gap: 10px;
     margin-top: 15px;
     color: var(--fr-primary-color);
-    font-size: var(--fr-font-size-secondary);
     text-transform: uppercase;
     cursor: pointer;
     font-size: 17px;
     font-weight: 800 !important;
 }
+
 .header-headings {
     display: flex;
     flex-direction: column;
 }
+
 .header-headings h1 {
     color: var(--fr-primary-color);
     margin: unset;
+    font-size: clamp(1.2rem, 2vw, 1.8rem);
 }
+
 .header-headings h3 {
     margin: unset;
     text-align: end;
@@ -41,49 +56,55 @@
     text-transform: uppercase;
     font-size: 14px;
 }
+
 .header-nav {
     display: flex;
     gap: 25px;
+    flex-wrap: wrap; /* перенос ссылок */
 }
+
 .header-nav__icon {
     width: 20px;
     height: 20px;
 }
 
+/* --- Планшеты --- */
 @media screen and (max-width: 1024px) {
     .header-wrapper {
-        flex-direction: column;
-        align-items: flex-start;
+        justify-content: center;
+        gap: 20px;
         height: auto;
         padding: 10px 15px;
-        gap: 10px;
     }
 
     .header-link {
         font-size: 15px;
-        margin-top: 10px;
+        margin-top: 5px;
     }
 
     .header-headings {
-        align-items: flex-start;
+        align-items: center;
+        width: 100%;
     }
 
     .header-headings h1 {
-        font-size: 20px;
+        font-size: 40px;
     }
 
     .header-headings h3 {
         font-size: 12px;
-        text-align: left;
+        text-align: center;
     }
 
     .header-nav {
+        justify-content: center;
         width: 100%;
-        flex-direction: column;
         gap: 15px;
     }
+
     .nav-icons {
-        flex-direction: row;
+        justify-content: center;
+        gap: 15px;
     }
 
     .header-nav__icon {
@@ -91,16 +112,32 @@
         height: 18px;
     }
 }
-.header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 100;
-    background-color: #FFFFFF;
-    transition: transform 0.3s ease;
-}
 
-.header--hidden {
-    transform: translateY(-100%);
+/* --- Смартфоны --- */
+@media screen and (max-width: 600px) {
+    .header-wrapper {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .header-nav {
+        flex-direction: row; /* ссылки в ряд */
+        flex-wrap: wrap;     /* переносятся если не влезают */
+        gap: 10px;
+        justify-content: center;
+    }
+
+    .header-link {
+        font-size: 14px;
+    }
+
+    .header-headings h1 {
+        font-size: 30px;
+    }
+
+    .header-nav__icon {
+        width: 16px;
+        height: 16px;
+    }
 }

@@ -35,6 +35,24 @@ export default function Slider({slides} : {slides: GlassesSlider[]}) {
                 navigation={true}
                 pagination={true}
                 modules={[Navigation]}
+                breakpoints={{
+                    0: {           // мобильные
+                        slidesPerView: 1,
+                        slidesPerGroup: 1,
+                    },
+                    480: {         // маленькие планшеты
+                        slidesPerView: 2,
+                        slidesPerGroup: 2,
+                    },
+                    768: {         // планшеты
+                        slidesPerView: 3,
+                        slidesPerGroup: 3,
+                    },
+                    1200: {        // десктоп
+                        slidesPerView: 4,
+                        slidesPerGroup: 4,
+                    }
+                }}
             >
                 {uniqueSlides?.map((slide, index) => (
                         <SwiperSlide

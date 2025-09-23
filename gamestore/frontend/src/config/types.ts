@@ -8,6 +8,10 @@ export type GlassesSlider = {
     email: string;
     content: string | null;
     rating: number;
+    slug: string;
+    image: string;
+    price: string;
+    title: string;
     createdAt: string;
     product: {
         id: number;

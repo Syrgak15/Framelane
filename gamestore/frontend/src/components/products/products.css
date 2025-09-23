@@ -1,12 +1,15 @@
 .products-wrapper {
     max-width: 1800px;
     margin: 0 auto;
-    padding-top: 50px;
+    padding: 50px 20px; /* добавил боковые отступы */
 }
 
 .products-heading {
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap; /* чтобы кнопка переносилась вниз на маленьких экранах */
+    gap: 20px;
 }
 
 .products-wrapper .products-heading__title {
@@ -23,6 +26,7 @@
     cursor: pointer;
     user-select: none;
     background: unset;
+    font-size: clamp(0.9rem, 2vw, 1.2rem);
 }
 
 .products-wrapper span {
@@ -32,10 +36,63 @@
 .products-list {
     margin-top: 75px;
     display: flex;
-    justify-content: space-between;
+    gap: 30px; /* равномерные отступы между карточками */
+    justify-content: center; /* выравнивание по центру */
     width: 100%;
+    padding: 0;
 }
 
 .products-list__item {
     list-style-type: none;
+    flex: 1 1 calc(25% - 30px); /* 4 колонки на десктопе */
+    max-width: 400px;
+}
+
+/* --- Адаптив --- */
+
+/* Планшеты */
+@media (max-width: 1024px) {
+    .products-list__item {
+        flex: 1 1 calc(33.333% - 30px);
+    }
+
+    .products-wrapper .products-heading__title {
+        font-size: clamp(1.5rem, 2.5vw, 2.5rem);
+    }
+    .products-list {
+        flex-wrap: wrap;
+    }
+}
+
+/* Смартфоны */
+@media (max-width: 768px) {
+    .products-list__item {
+        flex: 1 1 calc(50% - 20px); /* 2 колонки */
+    }
+    .products-wrapper .products-heading__title {
+        font-size: 35px;
+    }
+    .products-heading {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .products-wrapper .products-heading__btn {
+        align-self: flex-start;
+    }
+}
+
+/* Очень маленькие экраны */
+@media (max-width: 480px) {
+    .products-list__item {
+        flex: 1 1 100%; /* одна колонка */
+    }
+
+    .products-wrapper .products-heading__title {
+        font-size: 25px;
+    }
+
+    .products-wrapper .products-heading__btn {
+        font-size: 1rem;
+    }
 }

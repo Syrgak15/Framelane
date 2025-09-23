@@ -15,7 +15,6 @@ async function getCollectionsData() {
 
 async function MainPage() {
     const getGlassesData = await getCollectionsData();
-
     return <MainPageClient glassesData={getGlassesData}/>
 }
 export default MainPage;

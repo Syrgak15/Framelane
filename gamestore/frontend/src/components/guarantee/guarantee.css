@@ -1,38 +1,108 @@
 .guarantee {
     margin-top: 100px;
+    padding: 0 20px; /* чтобы на мобилках не прилипало к краям */
 }
+
 .guarantee-wrapper {
     max-width: 1700px;
     margin: 0 auto;
     padding-top: 50px;
     display: flex;
     justify-content: space-evenly;
+    flex-wrap: wrap; /* переносим блоки на новую строку */
+    gap: 40px; /* расстояние между карточками */
 }
+
 .guarantee-wrapper__title {
     text-align: center;
-    font-size: 42px;
+    font-size: clamp(1.5rem, 2.5vw, 2.6rem); /* гибкий размер */
+    font-weight: 700;
+    margin-bottom: 30px;
 }
 
 .guarantee-list__item {
     display: flex;
-    flex-wrap: wrap;
     flex-direction: column;
     align-items: center;
+    text-align: center;
+    max-width: 300px;
+    flex: 1 1 250px; /* ширина карточек адаптивная */
 }
 
 .item__image {
-    width: 45px;
-    height: 45px;
+    width: 55px;
+    height: 55px;
+    margin-bottom: 15px;
 }
+
 .item__image img {
     width: 100%;
     height: auto;
 }
+
 .item__title {
-    font-size: 42px;
+    font-size: clamp(1.2rem, 2vw, 2rem);
     text-transform: uppercase;
     font-weight: 700;
+    margin-bottom: 10px;
 }
+
 .item__subtitle {
-    font-size: 14px;
+    font-size: clamp(0.85rem, 1vw, 1rem);
+    color: #555;
+    line-height: 1.4;
+}
+
+/* --- Адаптив --- */
+
+/* Планшеты */
+@media (max-width: 1024px) {
+    .guarantee-wrapper {
+        gap: 30px;
+    }
+    .item__image {
+        width: 50px;
+        height: 50px;
+    }
+}
+
+/* Смартфоны */
+@media (max-width: 768px) {
+    .guarantee-wrapper {
+        flex-direction: column;
+        align-items: center;
+        gap: 25px;
+    }
+
+    .guarantee-list__item {
+        max-width: 90%;
+    }
+
+    .guarantee-wrapper__title {
+        font-size: 1.8rem;
+    }
+}
+
+/* Очень маленькие экраны */
+@media (max-width: 480px) {
+    .guarantee {
+        margin-top: 60px;
+    }
+
+    .guarantee-wrapper__title {
+        font-size: 1.5rem;
+    }
+
+    .item__title {
+        font-size: 1.2rem;
+    }
+
+    .item__subtitle {
+        font-size: 0.85rem;
+    }
+
+    .item__image {
+        width: 40px;
+        height: 40px;
+    }
 }
