@@ -14,9 +14,14 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 const app = express();
+const allowedOrigins = [
+    "http://localhost:3000",
+    "https://framelane-2.onrender.com"
+];
 app.use(
     cors({
-        origin: `https://framelane-2.onrender.com/`,
+        origin: "https://framelane.netlify.app",
+        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
         credentials: true,
         allowedHeaders: ["Content-Type", "Authorization"],
     })
@@ -44,9 +49,9 @@ function broadcast(data: any) {
 }
 
 // 🔑 секреты для токенов
-const JWT_SECRET = process.env.JWT_SECRET || "supersecret"; // access
+const JWT_SECRET = process.env.JWT_SECRET || "supersecret";
 const JWT_REFRESH_SECRET =
-    process.env.JWT_REFRESH_SECRET || "superrefresh"; // refresh
+    process.env.JWT_REFRESH_SECRET || "superrefresh";
 
 // Middleware для проверки accessToken
 function authMiddleware(req: any, res: any, next: any) {
@@ -91,7 +96,7 @@ AppDataSource.initialize()
         });
 
         // 🔹 Reviews
-        app.post("/reviews/:slug", authMiddleware, async (req, res) => {
+        app.post("/reviews/:slug", authMiddleware, async (req: any, res) => {
             try {
                 const { name, surname, email, review, rating } = req.body;
                 const { slug } = req.params;
@@ -140,7 +145,7 @@ AppDataSource.initialize()
         });
 
 
-        app.get("/reviews/:slug", async (req, res) => {
+        app.get("/reviews/:slug", async (req: any, res) => {
             try {
                 const { slug } = req.params;
                 const product = await productRepo.findOne({
@@ -170,7 +175,7 @@ AppDataSource.initialize()
             }
         });
 
-        app.get("/reviews", async (req, res) => {
+        app.get("/reviews", async (req: any, res) => {
             try {
                 const limit = parseInt(req.query.limit as string) || 5;
                 const reviews = await reviewRepo.find({
@@ -185,7 +190,7 @@ AppDataSource.initialize()
         });
 
         // 🔹 Wishlist
-        app.get("/wishlist", authMiddleware, async (req, res) => {
+        app.get("/wishlist", authMiddleware, async (req: any, res) => {
             try {
                 const items = await wishlistRepo.find({
                     where: { user: { id: req?.user?.id } },
@@ -197,7 +202,7 @@ AppDataSource.initialize()
             }
         });
 
-        app.post("/wishlist", authMiddleware, async (req, res) => {
+        app.post("/wishlist", authMiddleware, async (req: any, res) => {
             try {
                 const { id: rawId, title, slug, image, price, rating } =
                 req.body || {};
@@ -277,7 +282,7 @@ AppDataSource.initialize()
             }
         });
 
-        app.delete("/wishlist", authMiddleware, async (req, res) => {
+        app.delete("/wishlist", authMiddleware, async (req: any, res) => {
             try {
                 const { slug } = req.body || {};
                 if (!slug?.trim())
@@ -301,7 +306,7 @@ AppDataSource.initialize()
             }
         });
 
-        app.delete("/wishlist/all", authMiddleware, async (req, res) => {
+        app.delete("/wishlist/all", authMiddleware, async (req: any, res) => {
             try {
                 await wishlistRepo.delete({ user: { id: req?.user?.id } });
                 broadcast({ type: "wishlist_cleared", userId: req?.user?.id });
@@ -352,7 +357,7 @@ AppDataSource.initialize()
         });
 
         // login теперь отдаёт access + refresh
-        app.post("/login", async (req, res) => {
+        app.post("/login", async (req: any, res) => {
             try {
                 const { email, password } = req.body;
                 if (!email || !password)
@@ -393,7 +398,7 @@ AppDataSource.initialize()
         });
 
         // refresh токен
-        app.post("/refresh", async (req, res) => {
+        app.post("/refresh", async (req: any, res) => {
             const { refreshToken } = req.body;
             if (!refreshToken)
                 return res
