@@ -14,7 +14,15 @@ export default function RatingProgressBar({ reviews }: RatingDistributionProps) 
     );
 
     return (
-        <Stack spacing={1} sx={{ width: 250 }}>
+        <Stack
+            spacing={1}
+            sx={{
+                width: 250,
+                "@media (max-width:768px)": {
+                    width: "60vw",
+                },
+            }}
+        >
             {counts.map((count, idx) => {
                 const star = 5 - idx;
                 const percent = total > 0 ? (count / total) * 100 : 0;
@@ -43,5 +51,6 @@ export default function RatingProgressBar({ reviews }: RatingDistributionProps) 
                 );
             })}
         </Stack>
+
     );
 }

@@ -1,33 +1,88 @@
 .footer {
     background-color: #000;
-    height: 300px;
     color: #FFFFFF;
+    padding: 50px 20px; /* вместо фиксированной высоты */
 }
+
 .footer-wrapper {
     max-width: 1500px;
     margin: 0 auto;
-    padding-top: 100px;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px;
 }
+
 .footer-resources {
     display: flex;
-    width: 300px;
+    width: 100%;
+    max-width: 300px;
+    flex-wrap: wrap;
+    gap: 20px;
 }
-.footer-resources__list, .footer-company__list {
+
+.footer-resources__list,
+.footer-company__list {
     display: flex;
     flex-direction: column;
     gap: 15px;
+    padding: 0;
+    margin: 0;
 }
+
 .footer-wrapper ul .footer-resources__item {
     list-style-type: none;
 }
+
 .footer-resources__item {
     text-transform: capitalize;
     font-family: Comfortaa, "Times New Roman", serif;
     cursor: pointer;
+    transition: color 0.2s ease;
 }
+
+.footer-resources__item:hover,
+.footer-company__item:hover {
+    color: #ccc;
+}
+
 .footer-company__item {
     list-style-type: none;
     cursor: pointer;
+}
+
+/* --- Адаптив --- */
+
+/* Планшеты */
+@media (max-width: 1024px) {
+    .footer-wrapper {
+        grid-template-columns: 1fr; /* всё в колонку */
+        text-align: center;
+        gap: 30px;
+    }
+
+    .footer-resources {
+        justify-content: center;
+        max-width: 100%;
+    }
+}
+
+/* Смартфоны */
+@media (max-width: 600px) {
+    .footer {
+        padding: 30px 15px;
+    }
+
+    .footer-wrapper {
+        gap: 20px;
+    }
+
+    .footer-resources__list,
+    .footer-company__list {
+        gap: 10px;
+    }
+
+    .footer-resources__item,
+    .footer-company__item {
+        font-size: 14px;
+    }
 }

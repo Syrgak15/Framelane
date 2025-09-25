@@ -52,3 +52,29 @@
     grid-row-gap: 25px;
     margin-top: 50px;
 }
+@media (max-width: 1200px) {
+    .wishlists__page-list {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 900px) {
+    .wishlists__page-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .wishlists__page-list {
+        grid-template-columns: 1fr; /* по одной карточке */
+    }
+
+    .wishlist__page {
+        margin-top: 80px;
+        margin-bottom: 100px;
+    }
+
+    .wishlist__page-heading {
+        font-size: 18px;
+    }
+}

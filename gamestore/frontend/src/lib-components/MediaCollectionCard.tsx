@@ -26,33 +26,56 @@ export default function MediaCollectionCard({image, title, price}: MediaCardColl
                     },
                     borderRadius: "0px",
                     boxShadow: "unset",
-                }}>
+                }}
+            >
                 <CardMedia
-                    sx={{height: 500}}
+                    sx={{
+                        height: 500,
+                        "@media (max-width:600px)": {
+                            height: 250, // на мобилках в 2 раза меньше
+                        },
+                    }}
                     image={image}
                 />
                 <CardContent
-                    sx={{paddingLeft: 0}}
+                    sx={{
+                        paddingLeft: 0,
+                        "@media (max-width:600px)": {
+                            marginLeft: "10px", // поменьше отступ
+                        },
+                    }}
                 >
                     <Typography
                         sx={{
-                            fontWeight: '800',
+                            fontWeight: "800",
                             fontSize: 17,
-                            textTransform: 'uppercase',
+                            textTransform: "uppercase",
+                            "@media (max-width:600px)": {
+                                fontSize: 14, // меньше шрифт
+                            },
                         }}
                         gutterBottom
                         variant="h5"
-                        component="div">
+                        component="div"
+                    >
                         {title}
                     </Typography>
                     <Typography
-                        sx={{fontSize: 17, fontWeight: 300}}
+                        sx={{
+                            fontSize: 17,
+                            fontWeight: 300,
+                            "@media (max-width:600px)": {
+                                fontSize: 14,
+                            },
+                        }}
                         variant="h5"
-                        component="div">
+                        component="div"
+                    >
                         {price}
                     </Typography>
                 </CardContent>
             </Card>
+
         </>
 
     );

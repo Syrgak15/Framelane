@@ -19,12 +19,12 @@ export default function Banner() {
                 pagination={{
                     clickable: true,
                 }}
-                autoplay={{
-                    delay: 2500,
-                    disableOnInteraction: false,
-                    pauseOnMouseEnter: false,
-                }}
-                loop={true}
+                // autoplay={{
+                //     delay: 2500,
+                //     disableOnInteraction: false,
+                //     pauseOnMouseEnter: false,
+                // }}
+                // loop={true}
                 fadeEffect={{crossFade: true}}
             >
                 {Array.isArray(slides) && (slides.map((slide, i) => (

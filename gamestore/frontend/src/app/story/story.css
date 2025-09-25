@@ -188,10 +188,14 @@
     .story__headings {
         margin: 40px 20px;
     }
+    .story__intro {
+        margin-top: 125px;
+    }
 
     .story__title {
         font-size: 32px;
         padding-bottom: 20px;
+        padding-left: 8px;
     }
 
     .story__people,

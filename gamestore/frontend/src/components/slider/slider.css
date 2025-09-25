@@ -90,7 +90,6 @@
 @media (max-width: 480px) {
     .slider-wrapper__card {
         max-width: 100%;   /* на мобилке растягивается */
-        min-height: auto;  /* убираем фиксированную высоту */
         padding: 10px;
     }
 }

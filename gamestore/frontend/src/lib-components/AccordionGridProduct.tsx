@@ -26,6 +26,11 @@ export default function AccordionExpandIcon({
                 borderBottom: '1px solid #000',
                 mb: 2,
                 '&:before': { display: 'none' },
+
+                // адаптив
+                '@media (max-width:768px)': {
+                    maxWidth: '100%',
+                },
             }}
         >
             <AccordionSummary

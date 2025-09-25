@@ -33,7 +33,7 @@ export default function MediaCard({image, title, price}: MediaCardProps) {
                     image={image}
                 />
                 <CardContent
-                    sx={{paddingLeft: 0}}
+                    sx={{paddingLeft: 0, marginLeft: '15px'}}
                 >
                     <Typography
                         sx={{

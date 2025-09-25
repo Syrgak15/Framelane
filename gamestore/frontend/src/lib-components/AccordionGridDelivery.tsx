@@ -21,10 +21,15 @@ export default function AccordionExpandIcon({
         <Accordion
             sx={{
                 maxWidth: '67%',
-                borderBottom: '1px solid #000',
                 boxShadow: 'unset',
+                borderBottom: '1px solid #000',
                 mb: 2,
                 '&:before': { display: 'none' },
+
+                // адаптив
+                '@media (max-width:768px)': {
+                    maxWidth: '100%',
+                },
             }}
         >
             <AccordionSummary
