@@ -24,7 +24,7 @@ export default function SignUpForm ()  {
     const onSubmit:SubmitHandler<Inputs> = async (data) => {
 
         try {
-            const req = await fetch(`https://framelane-2.onrender.com/register`, {
+            const req = await fetch(`http://localhost:5000/register`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(data)
